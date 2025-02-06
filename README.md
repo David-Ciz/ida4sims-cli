@@ -26,8 +26,16 @@ This script uploads a dataset to the LEXIS platform using the py4lexis library.
 
     ```
 
+    **To upload dataset:**
+
     ```bash
     python upload_dataset.py "YOUR_DATASET_TITLE" "YOUR_LOCAL_FILE_PATH" "YOUR_ACCESS[optional]"
+    ```
+
+    **To get dataset content:**
+
+    ```bash
+    python get_dataset_content.py
     ```
 
     Default "access" is "project"

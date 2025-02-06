@@ -1,9 +1,10 @@
 import argparse
-from get_session import get_offline_session
-from create_dataset import create_lexis_dataset, DEFAULT_ACCESS, PROJECT
-from upload_files import upload_files_to_lexis
+from functions.get_session import get_offline_session
+from functions.create_dataset import create_lexis_dataset
+from functions.upload_files import upload_files_to_lexis
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
+from helpers.default_data import DEFAULT_ACCESS, PROJECT
 
 def main():
     parser = argparse.ArgumentParser(description='Upload a dataset to LEXIS')

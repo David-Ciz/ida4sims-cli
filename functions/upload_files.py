@@ -1,14 +1,13 @@
 from py4lexis.lexis_irods import iRODS
 import os
-from default_data import DEFAULT_ACCESS, PROJECT
-from check_if_dataset_contains_file import check_if_dataset_contains_file
+from helpers.default_data import DEFAULT_ACCESS, PROJECT
+from functions.check_if_dataset_contains_file import check_if_dataset_contains_file
 from py4lexis.ddi.datasets import Datasets
 
 def upload_files_to_lexis(irods: iRODS, datasets: Datasets, directory, dataset_id):
     for item in os.listdir(directory):
         item_path = os.path.join(directory, item)
 
-        # Skip directories, only handle files for now
         if os.path.isdir(item_path):
             print(f"Skipping directory: {item_path}")
             continue
@@ -18,10 +17,9 @@ def upload_files_to_lexis(irods: iRODS, datasets: Datasets, directory, dataset_i
 
         print(f"Checking if {item_path} exists in dataset {dataset_id}...")
 
-        # Check if the file already exists in the dataset
         if check_if_dataset_contains_file(datasets, dataset_id, item_path):
             print(f"File {item_path} already exists in dataset {dataset_id}. Skipping upload.")
-            continue  # Skip to the next file
+            continue
 
         print(f"Uploading {item_path} to {dataset_filepath} in dataset {dataset_id}...")
 
@@ -33,7 +31,6 @@ def upload_files_to_lexis(irods: iRODS, datasets: Datasets, directory, dataset_i
             dataset_id=dataset_id
         )
 
-        # Verify upload (optional, but good practice)
         if check_if_dataset_contains_file(datasets, dataset_id, item_path):
             print(f"Uploaded {item_path} successfully.")
         else:

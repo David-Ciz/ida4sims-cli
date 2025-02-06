@@ -1,5 +1,5 @@
 from py4lexis.lexis_irods import iRODS
-from default_data import DEFAULT_ACCESS, PROJECT, DATASET_ID_FILE_NAME
+from helpers.default_data import DEFAULT_ACCESS, PROJECT, DATASET_ID_FILE_NAME
 import os
 
 def create_lexis_dataset(irods: iRODS, title):

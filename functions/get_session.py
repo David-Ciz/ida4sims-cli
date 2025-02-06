@@ -1,6 +1,6 @@
 from py4lexis.session import LexisSession, LexisSessionOffline
 import os
-from default_data import OFFLINE_TOKEN_FILE_NAME
+from helpers.default_data import OFFLINE_TOKEN_FILE_NAME
 
 def get_offline_session():
     print("Checking for refresh token... (get_token)")
