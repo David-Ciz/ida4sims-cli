@@ -40,6 +40,8 @@ This script uploads a dataset to the LEXIS platform using the py4lexis library.
 
     Default "access" is "project"
 
+    Once a dataset has been successfully uploaded, you must run `python delete_uploaded_dataset_id.py` before uploading another.
+
 3.  **LEXIS Account:**
 
     You need an active LEXIS account with access to the appropriate project.
