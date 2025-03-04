@@ -1,7 +1,9 @@
 import argparse
-from functions.get_session import get_offline_session
+from functions.get_session import get_session
 from functions.create_dataset import create_lexis_dataset
 from functions.upload_files import upload_files_to_lexis
+from functions.delete_dataset_id import delete_saved_dataset_id
+
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
 from helpers.default_data import DEFAULT_ACCESS, PROJECT
@@ -19,11 +21,11 @@ def main():
 
     print(f"Creating dataset '{args.title}'...")
     print("Checking for refresh token...(main.py)")
-    offline_session = get_offline_session()
+    session = get_session()
         
     print("Creating iRODS object...(main.py)")
-    irods = iRODS(session=offline_session, suppress_print=False)
-    datasets = Datasets(session=offline_session, suppress_print=False)
+    irods = iRODS(session=session, suppress_print=False)
+    datasets = Datasets(session=session, suppress_print=False)
     
     print("Creating dataset...(main.py)")
     dataset_id = create_lexis_dataset(irods, args.title)
@@ -31,6 +33,9 @@ def main():
     print("Uploading files to dataset...(main.py)")
     upload_files_to_lexis(irods, datasets, args.directory, dataset_id)
 
+    print("Deleting saved dataset ID...(main.py)")
+    delete_saved_dataset_id()
+    
     print(f"Dataset '{args.title}' created with ID: {dataset_id}")
     print(f"Files from '{args.directory}' uploaded to dataset.")
 
