@@ -17,12 +17,9 @@ def print_dataset_content(datasets: Datasets, dataset_id: str):
                 item_path = item.get('name', 'N/A')
                 item_type = item.get('type', 'N/A')
                 item_size = item.get('size', 'N/A')
-                create_time = item.get('create_time', 'N/A')
-                mod_time = item.get('modification_time', 'N/A')
-                checksum = item.get('checksum', 'N/A')
 
                 print(f"  - Path: {item_path}")
-                print(f"    Type: {item_type}, Size: {item_size}, Created: {create_time}, Modified: {mod_time}, Checksum: {checksum}")
+                print(f"    Type: {item_type}, Size: {item_size}")
                 print("-" * 20)
             print("------------------------------------")
             return True

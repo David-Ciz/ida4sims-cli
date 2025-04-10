@@ -50,21 +50,27 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
             print(f"Attempting to upload file '{local_path}' as '{target_name}'...")
             try:
                 irods.put_data_object_to_dataset(
-                    local_filepath=local_path, dataset_filepath=target_name,
-                    access=DEFAULT_ACCESS, project=PROJECT, dataset_id=dataset_id
+                    local_filepath=local_path,
+                    dataset_filepath=target_name,
+                    access=DEFAULT_ACCESS, project=PROJECT,
+                    dataset_id=dataset_id,
+                    # exit_on_error=True,
+
                 )
                 print(f"SUCCESS: File '{target_name}' uploaded.")
             except Exception as e:
                 print(f"ERROR: Failed to upload file '{local_path}': {e}")
                 raise e
         elif os.path.isdir(local_path):
-            print(f"Attempting to upload directory '{local_path}' as '{target_name}'...")
+            print(f"Attempting to upload directory '{local_path}'...")
             try:
                 irods.upload_directory_to_dataset(
-                    local_directorypath=local_path, dataset_directorypath=target_name,
-                    access=DEFAULT_ACCESS, project=PROJECT, dataset_id=dataset_id
+                    local_directorypath=local_path,
+                    access=DEFAULT_ACCESS, project=PROJECT, 
+                    dataset_id=dataset_id,
+                    # exit_on_error=True,
                 )
-                print(f"SUCCESS: Directory '{target_name}' uploaded.")
+                print(f"SUCCESS: Directory uploaded.")
             except Exception as e:
                 print(f"ERROR: Failed to upload directory '{local_path}': {e}")
                 raise e
