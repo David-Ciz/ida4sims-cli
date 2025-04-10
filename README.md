@@ -21,13 +21,13 @@ This script uploads a dataset to the LEXIS platform using the py4lexis library.
     .venv\Scripts\activate
     ```
 
+    py4lexis requires <3.12
+
     ```bash
     pip install py4lexis --index-url https://opencode.it4i.eu/api/v4/projects/107/packages/pypi/simple
     ```
 
     Default "access" is "project"
-
-    Once a dataset has been successfully uploaded, you must run `python delete_uploaded_dataset_id.py` before uploading another.
 
 ## Assumptions
 
@@ -40,7 +40,7 @@ This script uploads a dataset to the LEXIS platform using the py4lexis library.
 **To upload dataset:**
 
     ```bash
-    python upload_dataset.py "YOUR_DATASET_TITLE" "YOUR_LOCAL_FILE_PATH" "YOUR_ACCESS[optional]"
+    python upload_dataset.py "YOUR_DATASET_TITLE" "YOUR_LOCAL_FILE_PATH" --access "YOUR_ACCESS[optional]"
     ```
 
 **To get dataset content:**

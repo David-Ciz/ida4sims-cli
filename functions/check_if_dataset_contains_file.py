@@ -1,45 +1,41 @@
-from py4lexis.ddi.datasets import Datasets
 import os
 
-def check_if_dataset_contains_file(datasets: Datasets, dataset_id: str, local_file_path: str):
-    base_local_path = os.getcwd()
-    print(f"Checking if file '{local_file_path}' exists in dataset '{dataset_id}'...")
-    print(f"Base local path: {base_local_path}")
+def check_if_dataset_contains_file(
+    dataset_content_list: list,
+    expected_dataset_filepath: str,
+    local_file_path: str
+):
+  
+    print(f"Checking cache for iRODS path: '{expected_dataset_filepath}' (Local: '{local_file_path}')")
 
-    try:
-        file_name = os.path.basename(local_file_path)
-        print(f"Filename: {file_name}")
-        file_path = file_name 
-        print(f"Expected iRODS file path: {file_path}")
-
-        local_file_size = os.path.getsize(local_file_path) if os.path.exists(local_file_path) else -1 
-        if local_file_size == -1:
-          print(f"Local file '{local_file_path}' not found!")
-          return False
-
-        filelist = datasets.get_content_of_dataset(dataset_id=dataset_id)
-
-        print(f"Contents of dataset {dataset_id}:")
-        if filelist and 'contents' in filelist:
-            for item in filelist['contents']:
-                item_path = item['name']
-                item_size = item.get('size', -1)
-
-                print(f"  - {item_path} ({item['type']}), Size: {item_size}")
-
-                if item['type'] == 'file' and item_path == file_path:
-                    if item_size == local_file_size:
-                        print(f"File '{file_path}' exists in dataset '{dataset_id}' with matching size ({item_size} bytes).")
-                        return True
-                    else:
-                        print(f"File '{file_path}' exists in dataset '{dataset_id}' but sizes differ. Local: {local_file_size} bytes, Remote: {item_size} bytes.")
-                        return False
-        else:
-            print("  - Dataset is empty or 'contents' key is missing.")
-
-        print(f"File '{file_path}' does not exist in dataset '{dataset_id}'.")
+    if not os.path.exists(local_file_path):
+        print(f"  Local file '{local_file_path}' not found for size check!")
         return False
 
-    except Exception as e:
-        print(f"Error checking dataset contents: {e}")
+    local_file_size = os.path.getsize(local_file_path)
+
+    if dataset_content_list is None:
+        print("  Dataset content list was not retrieved or is empty. Cannot confirm existence.")
         return False
+
+    if not dataset_content_list:
+         print("  Dataset content list is empty. File does not exist.")
+         return False
+
+    for item in dataset_content_list:
+        item_path = item.get('name')
+        item_type = item.get('type')
+        item_size = item.get('size', -1)
+        if item_type == 'file' and item_path == expected_dataset_filepath:
+            if item_size >= 0 and item_size == local_file_size:
+                print(f"  MATCH: File '{expected_dataset_filepath}' found in dataset cache with matching size ({item_size} bytes).")
+                return True
+            elif item_size >= 0:
+                 print(f"  MISMATCH: File '{expected_dataset_filepath}' found in dataset cache BUT sizes differ. Local: {local_file_size}, Remote: {item_size}.")
+                 return False
+            else:
+                 print(f"  WARNING: File '{expected_dataset_filepath}' found in dataset cache BUT remote size is unknown ({item_size}). Cannot confirm match.")
+                 return False
+
+    print(f"  NOT FOUND: File '{expected_dataset_filepath}' not found in dataset cache.")
+    return False
