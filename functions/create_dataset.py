@@ -13,6 +13,7 @@ def create_lexis_dataset(irods: iRODS, title):
         response = irods.create_dataset(
             access=DEFAULT_ACCESS, project=PROJECT, title=title
         )
+        
         dataset_id = response["dataset_id"]
 
         with open(DATASET_ID_FILE_NAME, "w") as text_file:

@@ -1,12 +1,14 @@
 import os
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
+from functions.compare_directory_contents import sync_directory_contents
+from functions.list_directory_contents import list_directory_contents
 from helpers.default_data import DEFAULT_ACCESS, PROJECT
 from functions.check_if_dataset_contains_file import check_if_dataset_contains_file
 from functions.check_if_dataset_contains_directory import check_if_dataset_contains_directory
 
 def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, dataset_id: str):
-  
+    
     print(f"Processing local path: '{local_path}' for dataset '{dataset_id}'")
 
     if not os.path.exists(local_path):
@@ -42,9 +44,13 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
 
     elif os.path.isdir(local_path):
         print(f"Path is a directory. Target name: '{target_name}'. Checking existence and size...")
+        print(f"...................check_if_dataset_contains_directory: {check_if_dataset_contains_directory(dataset_content_list, target_name, local_path)}")
         if check_if_dataset_contains_directory(dataset_content_list, target_name, local_path):
             should_skip = True
-         
+            local_dir_content = list_directory_contents(local_path)   
+            print("---------------------------------------sync_directory_contents-----------------------------------: ")
+            sync_directory_contents(irods, dataset_content_list, local_dir_content, dataset_id, local_path)        
+        
     if not should_skip:
         if os.path.isfile(local_path):
             print(f"Attempting to upload file '{local_path}' as '{target_name}'...")
@@ -54,8 +60,6 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
                     dataset_filepath=target_name,
                     access=DEFAULT_ACCESS, project=PROJECT,
                     dataset_id=dataset_id,
-                    # exit_on_error=True,
-
                 )
                 print(f"SUCCESS: File '{target_name}' uploaded.")
             except Exception as e:
