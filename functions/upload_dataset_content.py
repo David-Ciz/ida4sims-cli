@@ -1,7 +1,7 @@
 import os
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
-from functions.compare_directory_contents import sync_directory_contents
+from functions.sync_directory_contents import sync_directory_contents
 from functions.list_directory_contents import list_directory_contents
 from helpers.default_data import DEFAULT_ACCESS, PROJECT
 from functions.check_if_dataset_contains_file import check_if_dataset_contains_file
