@@ -1,8 +1,15 @@
-# LEXIS Dataset Upload Script
+# IDA4SIMS LEXIS Dataset Upload Script
 
-This script uploads a dataset to the LEXIS platform using the py4lexis library.
+## What is this about
 
-## Prerequisites
+This is a module facilitating cli uploads of datasets to the LEXIS platform using the py4lexis library and custom IDA4SIMS modifications.
+
+## Assumptions and Prerequisites
+
+- Python 3.11.* installed on the system
+- Access to the exa4mind_wp4 project on the LEXIS platform (https://opencode.it4i.eu/exa4mind-private/wp4/adams4sims/-/wikis/processes/acessing-Lexis-project)
+
+## Installation
 
 1.  **Clone the Repository:**
 
@@ -20,8 +27,8 @@ This script uploads a dataset to the LEXIS platform using the py4lexis library.
     ```bash
     .venv\Scripts\activate
     ```
-
-    py4lexis requires <3.12
+    
+    Install requirements:
 
     ```bash
     pip install py4lexis --index-url https://opencode.it4i.eu/api/v4/projects/107/packages/pypi/simple
@@ -66,3 +73,6 @@ The script performs the following actions:
 3.  **Dataset Creation:**
 
 4.  **Data Upload:**
+
+## Main contributors
+IT4Innovations
