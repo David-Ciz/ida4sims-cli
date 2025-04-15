@@ -110,8 +110,7 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                     access=DEFAULT_ACCESS, project=PROJECT, 
                     dataset_id=dataset_id,
                     dataset_directorypath=parent_path
-                )               
-                extra.extend(sub_diffs['extra_locally'])
+                )
                 
             elif item2.get('type') == 'file':
                 print(f"    🔵 EXTRA LOCALLY File: Local item '{name}' not found in dataset at expected path '{file_path}' (Local path: '{local_item_full_path}')")
