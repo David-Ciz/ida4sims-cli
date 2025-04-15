@@ -49,6 +49,12 @@ This script uploads a dataset to the LEXIS platform using the py4lexis library.
     python get_dataset_content.py
     ```
 
+**After all user's work is done, one has to use:**
+
+    ```bash
+    python logout.py
+    ```
+
 ## Script Functionality
 
 The script performs the following actions:

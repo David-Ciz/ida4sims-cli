@@ -72,7 +72,6 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
                     local_directorypath=local_path,
                     access=DEFAULT_ACCESS, project=PROJECT, 
                     dataset_id=dataset_id,
-                    # exit_on_error=True,
                 )
                 print(f"SUCCESS: Directory uploaded.")
             except Exception as e:

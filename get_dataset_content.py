@@ -1,9 +1,10 @@
 import logging
 from py4lexis.ddi.datasets import Datasets
-from functions.get_session import get_session
+from functions.LexisAuthManager import LexisAuthManager
 from helpers.default_data import DATASET_ID_FILE_NAME
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+lexisAuthManager = LexisAuthManager()
 
 def print_dataset_content(datasets: Datasets, dataset_id: str):
     """Retrieves and prints the contents of a dataset."""
@@ -53,7 +54,7 @@ if __name__ == "__main__":
          logging.error(f"Error reading dataset ID file: {e}")
          exit() 
 
-    session = get_session()
+    session = lexisAuthManager.login()
     if not session:
          logging.error("Failed to get LEXIS session. Exiting.")
          exit()

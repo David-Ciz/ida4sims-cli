@@ -1,11 +1,13 @@
 import argparse
-from functions.get_session import get_session
+from functions.LexisAuthManager import LexisAuthManager
 from functions.create_dataset import create_lexis_dataset
 from functions.upload_dataset_content import upload_dataset_content
 from functions.delete_dataset_id import delete_saved_dataset_id
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
 from helpers.default_data import DEFAULT_ACCESS
+
+auth_manager = LexisAuthManager()
 
 def main():
     parser = argparse.ArgumentParser(description='Upload a dataset to LEXIS')
@@ -18,8 +20,9 @@ def main():
 
     print(f"Processing dataset '{args.title}' with path '{args.path}'...")
     print("Checking for refresh token...(main.py)")
-    session = get_session()
-
+    
+    session = auth_manager.login() 
+    
     print("Creating iRODS object...(main.py)")
     irods = iRODS(session=session, suppress_print=False)
 
