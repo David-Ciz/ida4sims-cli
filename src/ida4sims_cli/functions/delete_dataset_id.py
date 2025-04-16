@@ -1,4 +1,4 @@
-from helpers.default_data import DATASET_ID_FILE_NAME
+from ida4sims_cli.helpers.default_data import DATASET_ID_FILE_NAME
 import os
 
 def delete_saved_dataset_id():

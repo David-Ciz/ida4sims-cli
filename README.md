@@ -1,4 +1,4 @@
-# IDA4SIMS LEXIS Dataset Upload Script
+# IDA4SIMS LEXIS Dataset Upload
 
 ## What is this about
 
@@ -6,8 +6,10 @@ This is a module facilitating cli uploads of datasets to the LEXIS platform usin
 
 ## Assumptions and Prerequisites
 
-- Python 3.11.* installed on the system
-- Access to the exa4mind_wp4 project on the LEXIS platform (https://opencode.it4i.eu/exa4mind-private/wp4/adams4sims/-/wikis/processes/acessing-Lexis-project)
+- **Python**  v.3.11.* installed on the system.
+- **Git:** Required for cloning the repository.
+- **LEXIS Account:** An active account on the LEXIS platform.
+- **Project Access:** Membership and access rights to the `exa4mind_wp4` project on LEXIS. (follow the instructions here: [wiki-instructions](https://github.com/David-Ciz/ida4sims-cli/wiki/accessing%E2%80%90Lexis%E2%80%90project))
 
 ## Installation
 
@@ -18,61 +20,65 @@ This is a module facilitating cli uploads of datasets to the LEXIS platform usin
     cd "ida4sims-cli"
     ```
 
-2.  **Install Required Libraries:**
-
+2.  **Create and Activate Virtual Environment:**
+    *   **Linux/macOS:**
+        ```bash
+        python -m venv .venv
+        source .venv/bin/activate
+        ```
+    *   **Windows (Command Prompt/PowerShell):**
+        ```bash
+        python -m venv .venv
+        .venv\Scripts\activate
+        ```
+    Or Alternative virtual environment manager.
+3.  **Install Required Libraries:**
+    *(Ensure your virtual environment is active)*
     ```bash
-    python -m venv .venv
+    pip install -r requirements.txt
     ```
-
-    ```bash
-    .venv\Scripts\activate
-    ```
-    
-    Install requirements:
-
-    ```bash
-    pip install py4lexis --index-url https://opencode.it4i.eu/api/v4/projects/107/packages/pypi/simple
-    ```
-
-    Default "access" is "project"
-
-## Assumptions
-
-1.  **LEXIS Account:**
-
-    You need an active LEXIS account with access to the appropriate project.
 
 ## Usage
 
-**To upload dataset:**
+The main script for uploading datasets is `upload_dataset.py` scripted to be utilized by calling  `ida-upload_dataset`. It uses subcommands to specify the *type* of data being uploaded.
 
-    ```bash
-    python upload_dataset.py "YOUR_DATASET_TITLE" "YOUR_LOCAL_FILE_PATH" --access "YOUR_ACCESS[optional]"
-    ```
+### Uploading Simulation Data
 
-**To get dataset content:**
+Use the `simulation` subcommand to upload folders containing simulation results.
 
-    ```bash
-    python get_dataset_content.py
-    ```
+**Syntax:**
 
-**After all user's work is done, one has to use:**
+```bash
+ida-upload_dataset simulation [OPTIONS] PATH TITLE
+```
 
-    ```bash
-    python logout.py
-    ```
+For a full list of options for the simulation subcommand, run: 
 
-## Script Functionality
+```bash
+ida-upload_dataset simulation --help
+```
 
-The script performs the following actions:
+#### Example:
 
-1.  **Token Generation:**
+```bash
+ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe"
+```
 
-2.  **Session Creation:**
 
-3.  **Dataset Creation:**
+### Logout
+**After you have finished your work, it's recommended to clear the stored authentication tokens:**
 
-4.  **Data Upload:**
+```bash
+ida-logout
+```
+
+## Script Functionality and Features
+
+In case of an interruption of the upload process, the script holds the Lexis dataset ID in a temporary file. This allows for resuming the upload process without needing to re-upload the entire dataset.
+
+Lexis token is saved into a keyring to avoid re-authentication for each upload. The script uses the `keyring` library to store the token securely. Please logout after the upload is finished to clear the token from the keyring.
+
+Not all optional metadata are required for the upload, missing information can be added later via a web interface.
 
 ## Main contributors
 IT4Innovations

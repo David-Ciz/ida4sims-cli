@@ -1,7 +1,7 @@
 import logging
 from py4lexis.ddi.datasets import Datasets
-from functions.LexisAuthManager import LexisAuthManager
-from helpers.default_data import DATASET_ID_FILE_NAME
+from src.ida4sims_cli.functions.LexisAuthManager import LexisAuthManager
+from src.ida4sims_cli.helpers.default_data import DATASET_ID_FILE_NAME
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 lexisAuthManager = LexisAuthManager()

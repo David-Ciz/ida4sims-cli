@@ -1,7 +1,6 @@
-import os
 import keyring
 from py4lexis.session import LexisSession, LexisSessionOffline
-from helpers.default_data import KEYRING_SERVICE_NAME, KEYRING_USERNAME
+from ida4sims_cli.helpers.default_data import KEYRING_SERVICE_NAME, KEYRING_USERNAME
 
 
 stored_token = keyring.get_password(KEYRING_SERVICE_NAME, KEYRING_USERNAME)
