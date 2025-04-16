@@ -9,7 +9,7 @@ This is a module facilitating cli uploads of datasets to the LEXIS platform usin
 - **Python**  v.3.11.* installed on the system.
 - **Git:** Required for cloning the repository.
 - **LEXIS Account:** An active account on the LEXIS platform.
-- **Project Access:** Membership and access rights to the `exa4mind_wp4` project on LEXIS. (https://opencode.it4i.eu/exa4mind-private/wp4/adams4sims/-/wikis/processes/acessing-Lexis-project)
+- **Project Access:** Membership and access rights to the `exa4mind_wp4` project on LEXIS. (follow the instructions here: [wiki-instructions](https://github.com/David-Ciz/ida4sims-cli/wiki/accessing%E2%80%90Lexis%E2%80%90project))
 
 ## Installation
 
@@ -40,7 +40,7 @@ This is a module facilitating cli uploads of datasets to the LEXIS platform usin
 
 ## Usage
 
-The main script for uploading datasets is `upload_dataset.py`. It uses subcommands to specify the *type* of data being uploaded.
+The main script for uploading datasets is `upload_dataset.py` scripted to be utilized by calling  `ida-upload_dataset`. It uses subcommands to specify the *type* of data being uploaded.
 
 ### Uploading Simulation Data
 
@@ -49,19 +49,19 @@ Use the `simulation` subcommand to upload folders containing simulation results.
 **Syntax:**
 
 ```bash
-python upload_dataset.py simulation [OPTIONS] PATH TITLE
+ida-upload_dataset simulation [OPTIONS] PATH TITLE
 ```
 
 For a full list of options for the simulation subcommand, run: 
 
 ```bash
-python upload_dataset.py simulation --help
+ida-upload_dataset simulation --help
 ```
 
 #### Example:
 
 ```bash
-python upload_dataset.py simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe"
+ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe"
 ```
 
 
@@ -69,7 +69,7 @@ python upload_dataset.py simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --a
 **After you have finished your work, it's recommended to clear the stored authentication tokens:**
 
 ```bash
-python logout.py
+ida-logout
 ```
 
 ## Script Functionality and Features

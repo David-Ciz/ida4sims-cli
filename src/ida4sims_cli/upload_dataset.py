@@ -1,13 +1,13 @@
 from typing import Dict
 
 import click
-from functions.LexisAuthManager import LexisAuthManager
-from functions.create_dataset import create_lexis_dataset
-from functions.upload_dataset_content import upload_dataset_content
-from functions.delete_dataset_id import delete_saved_dataset_id
+from ida4sims_cli.functions.LexisAuthManager import LexisAuthManager
+from ida4sims_cli.functions.create_dataset import create_lexis_dataset
+from ida4sims_cli.functions.upload_dataset_content import upload_dataset_content
+from ida4sims_cli.functions.delete_dataset_id import delete_saved_dataset_id
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
-from helpers.default_data import DEFAULT_ACCESS
+from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS
 import sys
 
 auth_manager = LexisAuthManager()
@@ -122,10 +122,10 @@ def simulation(path, title, access, author_name, description, stripping_mask, re
 
     \b
     Examples:
-        python upload_dataset.py simulation /data/sim_run_5 \\
+        ida-upload_dataset simulation /data/sim_run_5 \\
          "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase"
 
-        python upload_dataset.py simulation sim_runs "AAAA-strip-SOL" \\
+        ida-upload_dataset simulation sim_runs "AAAA-strip-SOL" \\
           --stripping-mask ":SOL" --access public --restraint-file-path restraints.dat
 
     """

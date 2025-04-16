@@ -1,7 +1,7 @@
 import os
 from py4lexis.lexis_irods import iRODS
 
-from helpers.default_data import DEFAULT_ACCESS, PROJECT
+from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS, PROJECT
 
 
 def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str, local_path='', parent_path=''):

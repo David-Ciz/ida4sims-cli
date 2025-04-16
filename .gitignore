@@ -149,3 +149,6 @@ pylint.d/
 
 
 # End of list
+/downloaded_dataset/
+/ff_upload/
+/test_upload_dataset/
