@@ -1,0 +1,154 @@
+# Byte-compiled / optimized / pickled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info
+*.dist-info
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+*/.venv/
+*/venv/
+*/ENV/
+*/env/
+
+# Distributions / Packaging
+dist/
+build/
+sdist/
+*.egg
+*.whl
+MANIFEST
+*.spec
+*.lib
+
+# Log and database files
+*.log
+*.sql
+*.sqlite
+*.db
+*.csv
+*.bak
+
+# Runtime / Generated files
+*.pid
+*.seed
+*.pot
+*.rpyc
+*.elc
+*.project
+*.cache
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.DS_Store  # macOS desktop services store
+._*        # macOS resource forks
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# OS generated files
+$RECYCLE.BIN/
+$Recycle.Bin/
+*.cab
+*.msi
+*.msp
+*.lnk
+
+# Editor and IDE specific files and directories
+.idea/
+.project
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*. DotSettings.user
+*.DotSettings
+*.vs
+*.userprefs
+*.history
+*.metadata
+*.komodo_project
+*.sublime-project
+*.sublime-workspace
+*.sublime-settings
+*.lproj
+*.xcuserdatad
+*.tmproj
+*.tags
+*.ccls-cache/
+*.clangd/
+*.code-workspace
+*.code-settings
+*.ropeproject
+*.vscmps
+*.iml
+out/
+target/
+.spyderproject
+.ropeproject
+.mypy_cache/
+.dmypy.json
+.pyre_check/
+*.ipynb_checkpoints
+
+# Test and coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.pytest_cache/
+nosetests.xml
+*/junit*.xml
+*/behave*.xml
+*/_output/
+coverage.xml
+*.json
+.nyc_output/
+.ruff_cache/
+
+# Documentation output
+docs/_build/
+docs/_readthedocs/
+
+# C extensions
+*.so
+*.pyd
+
+# Jupyter Notebook
+*.ipynb_checkpoints/
+
+# Optional - User specific files or secrets (customize these for your project)
+secrets.ini
+my_secrets.py
+user_settings.json
+local_settings.py
+
+# Project specific - adjust as needed for your project
+# Example: Ignore data or media directories if they are generated or large
+# data/
+# media/
+
+# Linting and code analysis caches
+pylint.d/
+.pylint.d/
+*.orig
+
+# Temporary files created by tools like PyCharm
+*.iml
+*.iws
+*.ipr
+
+
+# End of list
+/downloaded_dataset/
+/ff_upload/
+/test_upload_dataset/
