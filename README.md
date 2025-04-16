@@ -77,6 +77,26 @@ ida-upload-dataset simulation --help
 ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
 ```
 
+### Resuming the upload of Simulation Data
+
+In case of an interruption of the upload process, the script holds the created Lexis dataset ID in a temporary file `dataset_id.txt` created in the folder from where the script was called. 
+This allows for resuming the upload process by repeating the same upload command as before. In case of a missing `dataset_id.txt` file, the script will create a new dataset ID and start the upload process from scratch.
+
+#### Example:
+
+```bash
+ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
+```
+
+Interruptions happen, The user now has a dataset_id.txt file. The user executes the command again:
+
+```bash
+ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
+```
+
+#### Manual creation of dataset_id.txt file
+This file can also be created manually and it should contain the dataset ID only. Dataset ID is a string in the format of: `90b95334-1ac2-18f0-b80c-0242ac140003`. The id can be found in the log information of the upload, or can be found in the LEXIS web interface.
+
 
 ### Logout
 **After you have finished your work, it's recommended to clear the stored authentication tokens:**
@@ -84,8 +104,6 @@ ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-
 ```bash
 ida-logout
 ```
-
-## Script Functionality and Features
 
 
 ## Main contributors
