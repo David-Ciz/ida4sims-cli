@@ -4,9 +4,17 @@
 
 This is a module facilitating cli uploads of datasets to the LEXIS platform using the py4lexis library and custom IDA4SIMS modifications.
 
+Features include:
+- **Resuming upload:** In case of an interruption of the upload process, the script holds the Lexis dataset ID in a temporary file. This allows for resuming the upload process without needing to re-upload the entire dataset.
+
+- **Improved authentication:** Lexis token is saved to avoid re-authentication for each upload. The script uses the `keyring` library to store the token securely. Please logout after the upload is finished to clear the token from the keyring.
+
+- **Simulation Metadata:** Not all optional metadata are required for the upload, missing information can be added later via a web interface. Keep in mind that only simulations with all metadata filled in can be added to the final IDA database.
+
+
 ## Assumptions and Prerequisites
 
-- **Python**  v.3.11.* installed on the system.
+- **Python:**  v.3.11.* installed on the system.
 - **Git:** Required for cloning the repository.
 - **LEXIS Account:** An active account on the LEXIS platform.
 - **Project Access:** Membership and access rights to the `exa4mind_wp4` project on LEXIS. (follow the instructions here: [wiki-instructions](https://github.com/David-Ciz/ida4sims-cli/wiki/accessing%E2%80%90Lexis%E2%80%90project))
@@ -49,19 +57,24 @@ Use the `simulation` subcommand to upload folders containing simulation results.
 **Syntax:**
 
 ```bash
-ida-upload_dataset simulation [OPTIONS] PATH TITLE
+ida-upload-dataset simulation [OPTIONS] PATH TITLE
 ```
+
+TITLE: Dataset title (e.g., "uuuu-ROC-TIP3P-0.1NaCl").
+
+PATH: Local file or directory path containing simulation output.
+
 
 For a full list of options for the simulation subcommand, run: 
 
 ```bash
-ida-upload_dataset simulation --help
+ida-upload-dataset simulation --help
 ```
 
 #### Example:
 
 ```bash
-ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe"
+ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
 ```
 
 
@@ -74,11 +87,6 @@ ida-logout
 
 ## Script Functionality and Features
 
-In case of an interruption of the upload process, the script holds the Lexis dataset ID in a temporary file. This allows for resuming the upload process without needing to re-upload the entire dataset.
-
-Lexis token is saved into a keyring to avoid re-authentication for each upload. The script uses the `keyring` library to store the token securely. Please logout after the upload is finished to clear the token from the keyring.
-
-Not all optional metadata are required for the upload, missing information can be added later via a web interface.
 
 ## Main contributors
 IT4Innovations
