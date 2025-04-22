@@ -24,7 +24,7 @@ Features include:
 1.  **Clone the Repository:**
 
     ```bash
-    git clone repo: "git clone https://opencode.it4i.eu/exa4mind-private/wp4/ida4sims-cli.git"
+    git clone repo: "git clone https://github.com/David-Ciz/ida4sims-cli.git"
     cd "ida4sims-cli"
     ```
 
