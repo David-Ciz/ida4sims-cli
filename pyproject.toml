@@ -18,7 +18,8 @@ dependencies = [
     "pandas",
     "click",
     "py4lexis",
-    "keyring"
+    "keyring",
+    "keyrings.alt"
 ]
 
 [project.scripts]

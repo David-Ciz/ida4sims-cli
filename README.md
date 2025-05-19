@@ -24,7 +24,7 @@ Features include:
 1.  **Clone the Repository:**
 
     ```bash
-    git clone repo: "git clone https://opencode.it4i.eu/exa4mind-private/wp4/ida4sims-cli.git"
+    git clone repo: "git clone https://github.com/David-Ciz/ida4sims-cli.git"
     cd "ida4sims-cli"
     ```
 
@@ -74,7 +74,7 @@ ida-upload-dataset simulation --help
 #### Examples:
 
 ```bash
-ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
+ida-upload-dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
 ```
 
 ```bash
@@ -89,13 +89,13 @@ This allows for resuming the upload process by repeating the same upload command
 #### Example:
 
 ```bash
-ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
+ida-upload-dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
 ```
 
 Interruptions happen, The user now has a dataset_id.txt file. The user executes the command again:
 
 ```bash
-ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
+ida-upload-dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
 ```
 
 #### Manual creation of dataset_id.txt file
