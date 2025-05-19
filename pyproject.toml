@@ -7,7 +7,7 @@ name = "ida4sims-cli"
 version = "0.1.0"
 description = "cli uploads of datasets to the LEXIS platform using the py4lexis library and custom IDA4SIMS modifications"
 readme = "README.md"
-requires-python = ">=3.11,<3.12"
+requires-python = ">=3.10,<3.12"
 license = {text = "MIT"}
 authors = [
     {name = "Pylat Nestor", email = "pylat.nestor@vsb.cz"},

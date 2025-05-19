@@ -7,7 +7,7 @@ from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS, PROJECT
 from ida4sims_cli.functions.check_if_dataset_contains_file import check_if_dataset_contains_file
 from ida4sims_cli.functions.check_if_dataset_contains_directory import check_if_dataset_contains_directory
 
-def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, dataset_id: str):
+def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, dataset_id: str) -> None:
     
     print(f"Processing local path: '{local_path}' for dataset '{dataset_id}'")
 
@@ -34,6 +34,7 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
 
     should_skip = False
     target_name = os.path.basename(local_path)
+
     if not target_name and os.path.isdir(local_path):
         target_name = "uploaded_directory"
 
@@ -80,3 +81,72 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
         else:
              print(f"ERROR: Local path '{local_path}' is not a valid file or directory for upload.")
              raise ValueError(f"Local path '{local_path}' is not a file or directory.")
+
+def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, dataset_type: str, metadata: dict) -> None:
+    """
+    Uploads individual files from metadata to the dataset as separate data objects.
+    The metadata contains only the file names, not full paths.
+    Files that are None or do not exist in local_path are skipped.
+    """
+    if dataset_type == "simulation":
+        # This function should not be used for simulation datasets
+        print("upload_dataset_as_files is not intended for dataset_type=simulation")
+        return
+
+    file_keys = [
+        'dat_file',
+        'library_file',
+        'leaprc_file',
+        'frcmod_file',
+        'fixcommand_file'
+    ]
+    for key in file_keys:
+        filename = metadata.get(key)
+        if filename is None:
+            # No file specified for this key, skip to next
+            print(f"File '{key}' not specified, skipping.")
+            continue
+        # If the value is a list or tuple (e.g., multiple frcmod files)
+        if isinstance(filename, (list, tuple)):
+            for fname in filename:
+                if fname is None:
+                    # Skip if the list contains None
+                    continue
+                file_path = os.path.join(local_path, fname)
+                if not os.path.isfile(file_path):
+                    # File does not exist at the constructed path, skip
+                    print(f"File '{file_path}' does not exist, skipping.")
+                    continue
+                target_name = os.path.basename(file_path)
+                print(f"Uploading file '{file_path}' as '{target_name}' to dataset '{dataset_id}'...")
+                try:
+                    irods.put_data_object_to_dataset(
+                        local_filepath=file_path,
+                        dataset_filepath="./",
+                        access=DEFAULT_ACCESS, project=PROJECT,
+                        dataset_id=dataset_id,
+                    )
+                    print(f"SUCCESS: File '{target_name}' uploaded.")
+                except Exception as e:
+                    print(f"ERROR: Failed to upload file '{file_path}': {e}")
+                    raise e
+        else:
+            # Single file case
+            file_path = os.path.join(local_path, filename)
+            if not os.path.isfile(file_path):
+                # File does not exist at the constructed path, skip
+                print(f"File '{file_path}' does not exist, skipping.")
+                continue
+            target_name = os.path.basename(file_path)
+            print(f"Uploading file '{file_path}' as '{target_name}' to dataset '{dataset_id}'...")
+            try:
+                irods.put_data_object_to_dataset(
+                    local_filepath=file_path,
+                    dataset_filepath="./",
+                    access=DEFAULT_ACCESS, project=PROJECT,
+                    dataset_id=dataset_id,
+                )
+                print(f"SUCCESS: File '{target_name}' uploaded.")
+            except Exception as e:
+                print(f"ERROR: Failed to upload file '{file_path}': {e}")
+                raise e

@@ -71,10 +71,14 @@ For a full list of options for the simulation subcommand, run:
 ida-upload-dataset simulation --help
 ```
 
-#### Example:
+#### Examples:
 
 ```bash
 ida-upload_dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
+```
+
+```bash
+ida-upload-dataset forcefield /data/ff_examples/ROC_RNA  "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --leaprc-file leaprc.RNA.ROC --frcmod-file frcmod.ROC-RNA --frcmod-file frcmod.ROC-RNA_const
 ```
 
 ### Resuming the upload of Simulation Data
