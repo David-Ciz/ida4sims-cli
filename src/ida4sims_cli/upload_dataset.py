@@ -3,7 +3,7 @@ from typing import Dict
 import click
 from ida4sims_cli.functions.LexisAuthManager import LexisAuthManager
 from ida4sims_cli.functions.create_dataset import create_lexis_dataset
-from ida4sims_cli.functions.upload_dataset_content import upload_dataset_content
+from ida4sims_cli.functions.upload_dataset_content import upload_dataset_content, upload_dataset_as_files
 from ida4sims_cli.functions.delete_dataset_id import delete_saved_dataset_id
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
@@ -58,7 +58,10 @@ def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str,
         print(f"Created dataset entry with preliminary ID: '{dataset_id}'")
         print("Uploading content to dataset...")
 
-        upload_dataset_content(irods, datasets, path, dataset_id)
+        if dataset_type == "simulation":
+            upload_dataset_content(irods, datasets, path, dataset_id)
+        else:
+            upload_dataset_as_files(irods, path, dataset_id, dataset_type, metadata)
 
         print("Cleaning up temporary data...")
         delete_saved_dataset_id() # Assumes this cleans up temp ID files
@@ -140,23 +143,36 @@ def simulation(path, title, access, author_name, description, stripping_mask, re
 
 @cli.command()
 @common_options
-@click.option('--ff-type', type=str, required=True, help='Type of the force field (e.g., GROMOS, CHARMM, AMBER).')
-@click.option('--atom-types', type=str, help='Comma-separated list of main atom types covered (e.g., C,H,O,N).')
-def forcefield(title, path, access, ff_type, atom_types):
+@click.option('--ff-format', type=str, required=True, help='Type of the force field (e.g., GROMAX, CHARMM, AMBER).')
+@click.option('--ff-name', type=str, required=True, help='Name of the force field (e.g., "GROMAX 54A7").')
+@click.option('--molecule-type', type=str, required=True, help='Type of molecule (e.g., R or P or D or W).')
+@click.option('--dat-file', type=str, required=True, help='Name of the .dat file (e.g., "forcefield.dat").')
+@click.option('--library-file', type=str, required=True, help='Name of the library file (e.g., "library.lib").')
+@click.option('--leaprc-file', type=str, required=False, help='Name of the leaprc file (e.g., "leaprc.ff14SB").')
+@click.option('--frcmod-file', type=str, required=False, multiple=True, help='Name of the frcmod file (e.g., "frcmod.ff14SB"). Can be used multiple times.')
+@click.option('--fixcommand-file', type=str, required=False, help='Name of the fixcommand file (e.g., "fixcommand.txt").')
+
+def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file):
     """
     Upload a FORCE FIELD dataset.
 
-    TITLE: Dataset title (e.g., "Custom GROMOS force field for lipids").
+    TITLE: Dataset title (e.g., "Custom GROMAX force field for lipids").
     PATH: Local file or directory path containing force field files.
     """
     metadata = {
-        'ff_type': ff_type,
-        'atom_types': atom_types,
-        'dataset_type': 'force_field'
+        'ff_format': ff_format,
+        'dataset_type': 'force_field',
+        'ff_name': ff_name,
+        'molecule_type': molecule_type,
+        'dat_file': dat_file,
+        'library_file': library_file,
+        'leaprc_file': leaprc_file,
+        'frcmod_file': frcmod_file,
+        'fixcommand_file': fixcommand_file
     }
     # Remove None values if atom_types wasn't provided
-    metadata = {k: v for k, v in metadata.items() if v is not None}
-    upload_lexis_dataset(title, path, access, dataset_type='forcefield', **metadata)
+    
+    upload_lexis_dataset(title, path, access, metadata, dataset_type='forcefield')
 
 @cli.command()
 @common_options

@@ -12,8 +12,9 @@ def create_lexis_dataset(irods: iRODS, title: str, metadata: Dict[str, str]) -> 
         print(f"Dataset ID file found. Using existing dataset ID: {dataset_id}")
         return dataset_id
     else:
+
         response = irods.create_dataset(
-            access=DEFAULT_ACCESS, project=PROJECT, title=title, additional_metadata=metadata, dataset_type="simulation"
+            access=DEFAULT_ACCESS, project=PROJECT, title=title, additional_metadata=metadata, dataset_type=metadata["dataset_type"]
         )
         
         dataset_id = response["dataset_id"]
