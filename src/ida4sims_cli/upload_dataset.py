@@ -147,7 +147,7 @@ def simulation(path, title, access, author_name, description, stripping_mask, re
 @click.option('--ff-name', type=str, required=True, help='Name of the force field (e.g., "GROMAX 54A7").')
 @click.option('--molecule-type', type=str, required=True, help='Type of molecule (e.g., R or P or D or W).')
 @click.option('--dat-file', type=str, required=True, help='Name of the .dat file (e.g., "forcefield.dat").')
-@click.option('--library-file', type=str, required=True, help='Name of the library file (e.g., "library.lib").')
+@click.option('--library-file', type=str, required=True, multiple=True, help='Name of the library file (e.g., "library.lib"). . Can be used multiple times.')
 @click.option('--leaprc-file', type=str, required=False, help='Name of the leaprc file (e.g., "leaprc.ff14SB").')
 @click.option('--frcmod-file', type=str, required=False, multiple=True, help='Name of the frcmod file (e.g., "frcmod.ff14SB"). Can be used multiple times.')
 @click.option('--fixcommand-file', type=str, required=False, help='Name of the fixcommand file (e.g., "fixcommand.txt").')

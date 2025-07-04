@@ -5,6 +5,9 @@ from ida4sims_cli.helpers.default_data import KEYRING_SERVICE_NAME, KEYRING_USER
 
 stored_token = keyring.get_password(KEYRING_SERVICE_NAME, KEYRING_USERNAME)
 
+### IN CASE OF TOKEN PROBLEM UNCOMMENT THIS ROW BELOW   
+# stored_token=False
+
 class LexisAuthManager:
     offline_lexis_session = None
 
