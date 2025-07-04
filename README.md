@@ -73,12 +73,17 @@ ida-upload-dataset simulation --help
 
 #### Examples:
 
+##### Upload simulation:
 ```bash
-ida-upload-dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
+ida-upload-dataset simulation "/data/sim_run_5" "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase, using TIp3P water model"
 ```
-
+##### Upload Force Field with multiple frcmod files:
 ```bash
-ida-upload-dataset forcefield /data/ff_examples/ROC_RNA  "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --leaprc-file leaprc.RNA.ROC --frcmod-file frcmod.ROC-RNA --frcmod-file frcmod.ROC-RNA_const
+ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --leaprc-file leaprc.RNA.ROC --frcmod-file frcmod.ROC-RNA --frcmod-file frcmod.ROC-RNA_const
+```
+##### Upload Force Field with multiple library files:
+```bash
+ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --library-file terminalphos.ROC-RNA.lib --frcmod-file frcmod.ROC-RNA
 ```
 
 ### Resuming the upload of Simulation Data
@@ -108,6 +113,16 @@ This file can also be created manually and it should contain the dataset ID only
 ```bash
 ida-logout
 ```
+## Troubleshooting
+### 🔐 Token Authentication Error
+
+If you encounter the following errors:
+
+- `py4lexis.core.session.refresh_token(): AUTH -- b'{"error":"invalid_grant","error_description":"Offline user session not found"}' -- FAILED`
+- `Error occurred in py4lexis.core.session.get_access_token(): SESSION -- Access token is not defined! -- FAILED`
+
+you need to uncomment **line 9** in `ida4sims_cli/functions/LexisAuthManager.py`, set `stored_token=False`, and log in again to generate a new token.
+
 
 
 ## Main contributors
