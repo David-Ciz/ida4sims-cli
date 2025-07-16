@@ -165,9 +165,9 @@ def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file,
         'ff_name': ff_name,
         'molecule_type': molecule_type,
         'dat_file': dat_file,
-        'library_file': library_file,
+        'library_files': library_file,
         'leaprc_file': leaprc_file,
-        'frcmod_file': frcmod_file,
+        'frcmod_files': frcmod_file,
         'fixcommand_file': fixcommand_file
     }
     # Remove None values if atom_types wasn't provided
