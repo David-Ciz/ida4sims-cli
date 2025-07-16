@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ida4sims-cli"
-version = "0.1.0"
+version = "0.1.1"
 description = "cli uploads of datasets to the LEXIS platform using the py4lexis library and custom IDA4SIMS modifications"
 readme = "README.md"
 requires-python = ">=3.10,<3.12"
@@ -12,6 +12,7 @@ license = {text = "MIT"}
 authors = [
     {name = "Pylat Nestor", email = "pylat.nestor@vsb.cz"},
     {name = "David Číž", email = "david.ciz@vsb.cz"}
+    {name = "Radek Furmánek", email = "radek.furmanek@vsb.cz"}
 ]
 # Dependencies should be an array of strings in PEP 508 format
 dependencies = [
