@@ -95,9 +95,9 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
 
     file_keys = [
         'dat_file',
-        'library_file',
+        'library_files',
         'leaprc_file',
-        'frcmod_file',
+        'frcmod_files',
         'fixcommand_file'
     ]
     for key in file_keys:
