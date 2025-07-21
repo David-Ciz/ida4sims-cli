@@ -85,7 +85,10 @@ ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" -
 ```bash
 ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --library-file terminalphos.ROC-RNA.lib --frcmod-file frcmod.ROC-RNA
 ```
-
+##### Upload Force Field with additional metadata:
+```bash
+ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --data-publication-time "2024-06-01" --reference-article-doi "10.1234/example.doi" --author-name "James Bond"
+```
 ### Resuming the upload of Simulation Data
 
 In case of an interruption of the upload process, the script holds the created Lexis dataset ID in a temporary file `dataset_id.txt` created in the folder from where the script was called. 
