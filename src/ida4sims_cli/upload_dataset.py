@@ -151,8 +151,11 @@ def simulation(path, title, access, author_name, description, stripping_mask, re
 @click.option('--leaprc-file', type=str, required=False, help='Name of the leaprc file (e.g., "leaprc.ff14SB").')
 @click.option('--frcmod-file', type=str, required=False, multiple=True, help='Name of the frcmod file (e.g., "frcmod.ff14SB"). Can be used multiple times.')
 @click.option('--fixcommand-file', type=str, required=False, help='Name of the fixcommand file (e.g., "fixcommand.txt").')
+@click.option('--data-publication-time', type=str, required=False, help='Publication time of the data (e.g., "2024-06-01").')
+@click.option('--reference-article-doi', type=str, required=False, help='Reference article DOI (e.g., "10.1234/example.doi").')
+@click.option('--author-name', type=str, required=False, help='Name of the author of the force field.')
 
-def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file):
+def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name):
     """
     Upload a FORCE FIELD dataset.
 
@@ -168,7 +171,10 @@ def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file,
         'library_files': library_file,
         'leaprc_file': leaprc_file,
         'frcmod_files': frcmod_file,
-        'fixcommand_file': fixcommand_file
+        'fixcommand_file': fixcommand_file,
+        'data_publication_time': data_publication_time,
+        'reference_article_doi': reference_article_doi,
+        'author_name': author_name
     }
     # Remove None values if atom_types wasn't provided
     
