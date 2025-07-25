@@ -24,7 +24,7 @@ Features include:
 1.  **Clone the Repository:**
 
     ```bash
-    git clone repo: "git clone https://github.com/David-Ciz/ida4sims-cli.git"
+    git clone repo: "git clone https://opencode.it4i.eu/exa4mind-private/wp4/ida4sims-cli.git"
     cd "ida4sims-cli"
     ```
 
@@ -88,6 +88,10 @@ ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" -
 ##### Upload Force Field with additional metadata:
 ```bash
 ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --data-publication-time "2024-06-01" --reference-article-doi "10.1234/example.doi" --author-name "James Bond"
+```
+##### Upload Experimental data:
+```bash
+ida-upload-dataset experimental "/data/exp_examples/test1" "Experimental_data_test" --technique NMR --sample-description "Set of experimental data used for testing purpose" --temperature "285.65" --3j-coupling-sugar pexp_jcoupl-sugar --3j-coupling-backbone exp_jcoupl-bb --noe exp_noes --unobserved-noe exp_unoes --amb_noe amb_noe --data-publication-time "2024-06-01" --reference-article-doi "10.1234/example.doi" --author-name "James Bond"
 ```
 ### Resuming the upload of Simulation Data
 
