@@ -12,7 +12,7 @@ import sys
 
 auth_manager = LexisAuthManager()
 
-def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str, str], dataset_type: str) -> None:
+def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str, str]) -> None:
     """
     Core function to handle dataset creation and upload to LEXIS.
 
@@ -23,6 +23,9 @@ def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str,
         dataset_type (str): Type of the dataset (e.g., 'simulation', 'forcefield').
         **metadata (dict): Additional metadata specific to the dataset type.
     """
+
+
+    dataset_type = metadata.get('dataset_type','')  # Default to 'generic' if not specified
     print(f"--- Starting {dataset_type.capitalize()} Dataset Upload ---")
     print(f"Processing dataset '{title}' from path '{path}'...")
     print(f"Access level: {access}")
@@ -139,7 +142,7 @@ def simulation(path, title, access, author_name, description, stripping_mask, re
         'stripping_mask': stripping_mask,
         'restraint_file_path': restraint_file_path
     }
-    upload_lexis_dataset(title, path, access, metadata, dataset_type='simulation')
+    upload_lexis_dataset(title, path, access, metadata)
 
 @cli.command()
 @common_options
@@ -151,8 +154,11 @@ def simulation(path, title, access, author_name, description, stripping_mask, re
 @click.option('--leaprc-file', type=str, required=False, help='Name of the leaprc file (e.g., "leaprc.ff14SB").')
 @click.option('--frcmod-file', type=str, required=False, multiple=True, help='Name of the frcmod file (e.g., "frcmod.ff14SB"). Can be used multiple times.')
 @click.option('--fixcommand-file', type=str, required=False, help='Name of the fixcommand file (e.g., "fixcommand.txt").')
+@click.option('--data-publication-time', type=str, required=False, help='Publication time of the data (e.g., "2024-06-01").')
+@click.option('--reference-article-doi', type=str, required=False, help='Reference article DOI (e.g., "10.1234/example.doi").')
+@click.option('--author-name', type=str, required=False, help='Name of the author of the force field.')
 
-def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file):
+def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name):
     """
     Upload a FORCE FIELD dataset.
 
@@ -168,17 +174,30 @@ def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file,
         'library_files': library_file,
         'leaprc_file': leaprc_file,
         'frcmod_files': frcmod_file,
-        'fixcommand_file': fixcommand_file
+        'fixcommand_file': fixcommand_file,
+        'data_publication_time': data_publication_time,
+        'reference_article_doi': reference_article_doi,
+        'author_name': author_name
     }
     # Remove None values if atom_types wasn't provided
     
-    upload_lexis_dataset(title, path, access, metadata, dataset_type='forcefield')
+    upload_lexis_dataset(title, path, access, metadata)
 
 @cli.command()
 @common_options
 @click.option('--technique', type=str, required=True, help='Experimental technique used (e.g., NMR, XRD, Cryo-EM).')
 @click.option('--sample-description', type=str, help='Brief description of the sample.')
-def experimental(title, path, access, technique, sample_description):
+@click.option('--data-publication-time', type=str, required=False, help='Publication timestamp of the data (e.g., "2024-06-01T12:00:00Z").')
+@click.option('--reference-article-doi', type=str, required=False, help='Reference article DOI (e.g., "10.1234/example.doi").')
+@click.option('--author-name', type=str, required=False, help='Name of the author of the dataset.')
+@click.option('--temperature', type=str, required=False, help='Temperature at which the experiment was performed.')
+@click.option('--3j-coupling', '_3j_couplings', type=str, multiple=True, required=False, help='3J coupling-sugar, 3J coupling-backbone or one file with both.')
+@click.option('--noe', type=str, multiple=True, required=False, help='NOE, UNOE, AMBNOE file or one file with NOE, UNOE and AMBNOE or combination.')
+def experimental(
+    title, path, access, technique, sample_description, data_publication_time,
+    reference_article_doi, author_name, temperature,
+    _3j_couplings, noe
+):
     """
     Upload an EXPERIMENTAL DATA dataset.
 
@@ -188,11 +207,17 @@ def experimental(title, path, access, technique, sample_description):
     metadata = {
         'technique': technique,
         'sample_description': sample_description,
-        'dataset_type': 'experimental'
+        'dataset_type': 'experimental_data',
+        'data_publication_time': data_publication_time,
+        'reference_article_doi': reference_article_doi,
+        'author_name': author_name,
+        'temperature': temperature,
+        '3j_coupling_files': _3j_couplings,
+        'noe_files': noe
     }
     # Remove None values if sample_description wasn't provided
     metadata = {k: v for k, v in metadata.items() if v is not None}
-    upload_lexis_dataset(title, path, access, dataset_type='experimental', **metadata)
+    upload_lexis_dataset(title, path, access,metadata)
 
 
 if __name__ == "__main__":

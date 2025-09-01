@@ -24,7 +24,7 @@ Features include:
 1.  **Clone the Repository:**
 
     ```bash
-    git clone repo: "git clone https://github.com/David-Ciz/ida4sims-cli.git"
+    git clone repo: "git clone https://opencode.it4i.eu/exa4mind-private/wp4/ida4sims-cli.git"
     cd "ida4sims-cli"
     ```
 
@@ -85,7 +85,18 @@ ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" -
 ```bash
 ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --library-file terminalphos.ROC-RNA.lib --frcmod-file frcmod.ROC-RNA
 ```
-
+##### Upload Force Field with additional metadata:
+```bash
+ida-upload-dataset forcefield "/data/ff_examples/ROC_RNA" "ROC-RNA forcefield" --ff-format AMBER --ff-name "ROC-RNA" --molecule-type R --dat-file parm10.dat --library-file nucleic12.ROC-RNA.lib --data-publication-time "2024-06-01" --reference-article-doi "10.1234/example.doi" --author-name "James Bond"
+```
+##### Upload Experimental data with multiple files:
+```bash
+ida-upload-dataset experimental "/data/exp_examples/test1" "Experimental_data_test" --technique NMR --sample-description "Set of experimental data used for testing purpose" --temperature "285.65" --3j-coupling exp_jcoupl-sugar --3j-coupling exp_jcoupl-bb --noe exp_noes --noe exp_unoes --noe amb_noe --data-publication-time "2024-06-01" --reference-article-doi "10.1234/example.doi" --author-name "James Bond"
+```
+##### Upload Experimental data with file contain multiple types:
+```bash
+ida-upload-dataset experimental "/data/exp_examples/test1" "Experimental_data_test" --technique NMR --sample-description "Set of experimental data used for testing purpose" --temperature "285.65" --3j-coupling exp_jcoupl-sugar_jcoup-bb --noe exp_noes_ambnoe_unoe --data-publication-time "2024-06-01" --reference-article-doi "10.1234/example.doi" --author-name "James Bond"
+```
 ### Resuming the upload of Simulation Data
 
 In case of an interruption of the upload process, the script holds the created Lexis dataset ID in a temporary file `dataset_id.txt` created in the folder from where the script was called. 

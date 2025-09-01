@@ -92,14 +92,25 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
         # This function should not be used for simulation datasets
         print("upload_dataset_as_files is not intended for dataset_type=simulation")
         return
+    
+    elif dataset_type=="forcefield":
+        file_keys = [
+            'dat_file',
+            'library_files',
+            'leaprc_file',
+            'frcmod_files',
+            'fixcommand_file'
+        ]
 
-    file_keys = [
-        'dat_file',
-        'library_files',
-        'leaprc_file',
-        'frcmod_files',
-        'fixcommand_file'
-    ]
+    elif dataset_type=="experimental_data":
+        file_keys = [
+            '3j_coupling_files',
+            'noe_files'
+        ]
+    else:
+        print(f"ERROR: Unsupported dataset type '{dataset_type}' for file upload.")
+        return
+    
     for key in file_keys:
         filename = metadata.get(key)
         if filename is None:
