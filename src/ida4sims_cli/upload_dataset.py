@@ -191,15 +191,12 @@ def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file,
 @click.option('--reference-article-doi', type=str, required=False, help='Reference article DOI (e.g., "10.1234/example.doi").')
 @click.option('--author-name', type=str, required=False, help='Name of the author of the dataset.')
 @click.option('--temperature', type=str, required=False, help='Temperature at which the experiment was performed.')
-@click.option('--3j-coupling-sugar', '_3j_coupling_sugar', type=str, required=False, help='3J coupling sugar file.')
-@click.option('--3j-coupling-backbone', '_3j_coupling_backbone', type=str, required=False, help='3J coupling backbone file.')
-@click.option('--noe', type=str, required=False, help='NOE file.')
-@click.option('--unobserved-noe', type=str, required=False, help='Unobserved NOE file.')
-@click.option('--amb-noe', type=str, required=False, help='Ambiguous NOE file.')
+@click.option('--3j-coupling', '_3j_couplings', type=str, multiple=True, required=False, help='3J coupling-sugar, 3J coupling-backbone or one file with both.')
+@click.option('--noe', type=str, multiple=True, required=False, help='NOE, UNOE, AMBNOE file or one file with NOE, UNOE and AMBNOE or combination.')
 def experimental(
     title, path, access, technique, sample_description, data_publication_time,
     reference_article_doi, author_name, temperature,
-    _3j_coupling_sugar, _3j_coupling_backbone, noe, unobserved_noe, amb_noe
+    _3j_couplings, noe
 ):
     """
     Upload an EXPERIMENTAL DATA dataset.
@@ -215,11 +212,8 @@ def experimental(
         'reference_article_doi': reference_article_doi,
         'author_name': author_name,
         'temperature': temperature,
-        '3j_coupling_sugar': _3j_coupling_sugar,
-        '3j_coupling_backbone': _3j_coupling_backbone,
-        'noe': noe,
-        'unobserved_noe': unobserved_noe,
-        'amb_noe': amb_noe
+        '3j_coupling_files': _3j_couplings,
+        'noe_files': noe
     }
     # Remove None values if sample_description wasn't provided
     metadata = {k: v for k, v in metadata.items() if v is not None}

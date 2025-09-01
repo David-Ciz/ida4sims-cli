@@ -104,11 +104,8 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
 
     elif dataset_type=="experimental_data":
         file_keys = [
-            '3j_coupling_sugar',
-            '3j_coupling_backbone',
-            'noe',
-            'unobserved_noe',
-            'amb_noe'
+            '3j_coupling_files',
+            'noe_files'
         ]
     else:
         print(f"ERROR: Unsupported dataset type '{dataset_type}' for file upload.")
