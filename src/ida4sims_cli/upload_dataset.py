@@ -1,3 +1,4 @@
+import json
 from typing import Dict
 
 import click
@@ -8,6 +9,7 @@ from ida4sims_cli.functions.delete_dataset_id import delete_saved_dataset_id
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
 from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS
+from ida4sims_cli.helpers.creators import parse_creator_strings
 import sys
 
 auth_manager = LexisAuthManager()
@@ -95,6 +97,7 @@ def cli():
     """LEXIS Dataset Uploader Tool"""
     pass
 
+
 def common_options(func):
     func = click.argument('title', type=str)(func)
     func = click.argument('path', type=click.Path(exists=True, file_okay=True, dir_okay=True, readable=True))(func)
@@ -106,13 +109,50 @@ def common_options(func):
     )(func)
     return func
 
+
+def creator_options(func):
+    """Add common creator metadata CLI options.
+
+    Users can specify either personal or organizational creators using
+    semicolon-separated strings. Examples:
+
+      --creator-person "Doe, Jane; orcid=0000-0002-1825-0097; affiliation=Uni X"
+      --creator-org "Some Institute; ror=03yrm5c26; affiliation=Consortium Y"
+
+    Within a single command invocation you must choose one style only.
+    """
+    func = click.option(
+        '--creator-person',
+        'creator_person',
+        multiple=True,
+        type=str,
+        help=(
+            'Personal creator, may be used multiple times. Format: '
+            '"Family, Given; orcid=...; affiliation=..."'
+        ),
+    )(func)
+    func = click.option(
+        '--creator-org',
+        'creator_org',
+        multiple=True,
+        type=str,
+        help=(
+            'Organizational creator, may be used multiple times. Format: '
+            '"Organization Name; ror=...; affiliation=..."'
+        ),
+    )(func)
+    return func
+
+
 @cli.command()
 @common_options
+@creator_options
 @click.option('--author-name', type=str, required=False, help='Name of the author of the simulation.')
 @click.option('--description', type=str, required=False, help='Description of the simulation.')
 @click.option('--stripping-mask', type=str, required=False, help='Stripping mask for the simulation (e.g., ":WAT;20-30").')
 @click.option('--restraint_file_path', type=str, required=False, help='Path to the restraint file (e.g., "restraints/restraint_file.txt").')
-def simulation(path, title, access, author_name, description, stripping_mask, restraint_file_path):
+
+def simulation(path, title, access, creator_person, creator_org, author_name, description, stripping_mask, restraint_file_path):
     """
     Uploads a SIMULATION dataset to LEXIS.
 
@@ -135,17 +175,24 @@ def simulation(path, title, access, author_name, description, stripping_mask, re
           --stripping-mask ":SOL" --access public --restraint-file-path restraints.dat
 
     """
+    creators = parse_creator_strings(list(creator_person), list(creator_org))
+
     metadata = {
         'dataset_type': 'simulation',
         'author_name': author_name,
         'description': description,
         'stripping_mask': stripping_mask,
-        'restraint_file_path': restraint_file_path
+        'restraint_file_path': restraint_file_path,
     }
+    if creators:
+        metadata['creators_json'] = json.dumps(creators)
+
     upload_lexis_dataset(title, path, access, metadata)
+
 
 @cli.command()
 @common_options
+@creator_options
 @click.option('--ff-format', type=str, required=True, help='Type of the force field (e.g., GROMAX, CHARMM, AMBER).')
 @click.option('--ff-name', type=str, required=True, help='Name of the force field (e.g., "GROMAX 54A7").')
 @click.option('--molecule-type', type=str, required=True, help='Type of molecule (e.g., R or P or D or W).')
@@ -157,14 +204,22 @@ def simulation(path, title, access, author_name, description, stripping_mask, re
 @click.option('--data-publication-time', type=str, required=False, help='Publication time of the data (e.g., "2024-06-01").')
 @click.option('--reference-article-doi', type=str, required=False, help='Reference article DOI (e.g., "10.1234/example.doi").')
 @click.option('--author-name', type=str, required=False, help='Name of the author of the force field.')
+@click.option(
+    '--is-hidden/--no-is-hidden',
+    default=False,
+    show_default=True,
+    help='Whether the force field dataset should be hidden.',
+)
 
-def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name):
+def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name, is_hidden):
     """
     Upload a FORCE FIELD dataset.
 
     TITLE: Dataset title (e.g., "Custom GROMAX force field for lipids").
     PATH: Local file or directory path containing force field files.
     """
+    creators = parse_creator_strings(list(creator_person), list(creator_org))
+
     metadata = {
         'ff_format': ff_format,
         'dataset_type': 'force_field',
@@ -177,14 +232,18 @@ def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file,
         'fixcommand_file': fixcommand_file,
         'data_publication_time': data_publication_time,
         'reference_article_doi': reference_article_doi,
-        'author_name': author_name
+        'author_name': author_name,
+        'is_hidden': str(is_hidden),
     }
-    # Remove None values if atom_types wasn't provided
-    
+    if creators:
+        metadata['creators_json'] = json.dumps(creators)
+
     upload_lexis_dataset(title, path, access, metadata)
+
 
 @cli.command()
 @common_options
+@creator_options
 @click.option('--technique', type=str, required=True, help='Experimental technique used (e.g., NMR, XRD, Cryo-EM).')
 @click.option('--sample-description', type=str, help='Brief description of the sample.')
 @click.option('--data-publication-time', type=str, required=False, help='Publication timestamp of the data (e.g., "2024-06-01T12:00:00Z").')
@@ -194,7 +253,7 @@ def forcefield(title, path, access, ff_format, ff_name, molecule_type, dat_file,
 @click.option('--3j-coupling', '_3j_couplings', type=str, multiple=True, required=False, help='3J coupling-sugar, 3J coupling-backbone or one file with both.')
 @click.option('--noe', type=str, multiple=True, required=False, help='NOE, UNOE, AMBNOE file or one file with NOE, UNOE and AMBNOE or combination.')
 def experimental(
-    title, path, access, technique, sample_description, data_publication_time,
+    title, path, access, creator_person, creator_org, technique, sample_description, data_publication_time,
     reference_article_doi, author_name, temperature,
     _3j_couplings, noe
 ):
@@ -204,6 +263,8 @@ def experimental(
     TITLE: Dataset title (e.g., "NMR spectra of molecule Y").
     PATH: Local file or directory path containing experimental data.
     """
+    creators = parse_creator_strings(list(creator_person), list(creator_org))
+
     metadata = {
         'technique': technique,
         'sample_description': sample_description,
@@ -215,9 +276,12 @@ def experimental(
         '3j_coupling_files': _3j_couplings,
         'noe_files': noe
     }
+    if creators:
+        metadata['creators_json'] = json.dumps(creators)
     # Remove None values if sample_description wasn't provided
     metadata = {k: v for k, v in metadata.items() if v is not None}
-    upload_lexis_dataset(title, path, access,metadata)
+
+    upload_lexis_dataset(title, path, access, metadata)
 
 
 if __name__ == "__main__":
