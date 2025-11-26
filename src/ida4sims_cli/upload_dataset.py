@@ -205,15 +205,21 @@ def simulation(path, title, access, creator_person, creator_org, author_name, de
 @click.option('--reference-article-doi', type=str, required=False, help='Reference article DOI (e.g., "10.1234/example.doi").')
 @click.option('--author-name', type=str, required=False, help='Name of the author of the force field.')
 @click.option(
-    '--is-hidden/--no-is-hidden',
-    default=False,
+    '--feature-state',
+    type=click.Choice(['persistent', 'experimental', 'derived']),
+    default='persistent',
     show_default=True,
-    help='Whether the force field dataset should be hidden.',
+    help='Feature state of the force field. "persistent" and "derived" are visible, "experimental" is not.',
+)
+@click.option(
+    '--display-name',
+    type=str,
+    required=False,
+    help='Display name, used when feature-state is "experimental".',
 )
 
-def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name, is_hidden):
-    """
-    Upload a FORCE FIELD dataset.
+def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name, is_hidden, feature_state, display_name):
+    """Upload a FORCE FIELD dataset.
 
     TITLE: Dataset title (e.g., "Custom GROMAX force field for lipids").
     PATH: Local file or directory path containing force field files.
@@ -233,7 +239,9 @@ def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_n
         'data_publication_time': data_publication_time,
         'reference_article_doi': reference_article_doi,
         'author_name': author_name,
-        'is_hidden': str(is_hidden),
+        'feature_state': feature_state,
+        'display_name': display_name,
+
     }
     if creators:
         metadata['creators_json'] = json.dumps(creators)
