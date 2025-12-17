@@ -18,7 +18,7 @@ authors = [
 dependencies = [
     "pandas",
     "click",
-    "py4lexis",
+    "py4lexis==4.0.0",
     "keyring",
     "keyrings.alt"
 ]

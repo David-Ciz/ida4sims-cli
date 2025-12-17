@@ -1,5 +1,5 @@
 import keyring
-from py4lexis.session import LexisSession, LexisSessionOffline
+from py4lexis.session import LexisSession, LexisSessionToken
 from ida4sims_cli.helpers.default_data import KEYRING_SERVICE_NAME, KEYRING_USERNAME
 
 
