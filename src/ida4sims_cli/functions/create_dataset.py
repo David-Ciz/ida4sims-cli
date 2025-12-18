@@ -1,6 +1,9 @@
 from typing import Dict
+from typing import cast
 
 from py4lexis.lexis_irods import iRODS
+from py4lexis.core.typings.ddi import DatasetType
+
 from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS, PROJECT, DATASET_ID_FILE_NAME, STORAGE_NAME, STORAGE_RESOURCE
 import os
 
@@ -12,9 +15,11 @@ def create_lexis_dataset(irods: iRODS, title: str, metadata: Dict[str, str]) -> 
         print(f"Dataset ID file found. Using existing dataset ID: {dataset_id}")
         return dataset_id
     else:
+        dataset_type_str = metadata["dataset_type"]
+        dataset_type:  DatasetType = cast(DatasetType, dataset_type_str)
 
         response = irods.create_dataset(
-            access=DEFAULT_ACCESS, project=PROJECT, storage_name=STORAGE_NAME, storage_resource=STORAGE_RESOURCE, title=title, additional_metadata=metadata, dataset_type="dataset"
+            access=DEFAULT_ACCESS, project=PROJECT, storage_name=STORAGE_NAME, storage_resource=STORAGE_RESOURCE, title=title, additional_metadata=metadata, dataset_type= dataset_type
         )
         
         dataset_id = response["dataset_id"]
