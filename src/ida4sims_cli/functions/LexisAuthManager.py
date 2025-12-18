@@ -1,5 +1,5 @@
 import keyring
-from py4lexis.session import LexisSession, LexisSessionOffline
+from py4lexis.session import LexisSession, LexisSessionToken
 from ida4sims_cli.helpers.default_data import KEYRING_SERVICE_NAME, KEYRING_USERNAME
 
 
@@ -21,7 +21,7 @@ class LexisAuthManager:
         if stored_token:
             print("Attempting to create session using stored token (may be refreshed)...")
             try:
-                session_attempt = LexisSessionOffline(refresh_token=stored_token)
+                session_attempt = LexisSessionToken(refresh_token=stored_token)
 
                 if session_attempt:
                     print("Session created successfully using stored/refreshed token.")
@@ -45,14 +45,14 @@ class LexisAuthManager:
 
                 if lexis_session:
                     print("New login successful.")
-                    new_offline_token = lexis_session.get_offline_token()
+                    new_offline_token = lexis_session.get_refresh_token()
 
                     if new_offline_token:
                         print("New offline token obtained.")
                         keyring.set_password(KEYRING_SERVICE_NAME, KEYRING_USERNAME, new_offline_token)
                         print(f"Stored new offline token for '{KEYRING_SERVICE_NAME}'.")
 
-                        self.offline_lexis_session = LexisSessionOffline(refresh_token=new_offline_token)
+                        self.offline_lexis_session = LexisSessionToken(refresh_token=new_offline_token)
                         print("Offline session created with new token.")
                     else:
                         print("Warning: Login succeeded, but failed to retrieve an offline token to store.")
@@ -73,7 +73,7 @@ class LexisAuthManager:
         return self.offline_lexis_session
     
     def logout (self):
-        self.offline_lexis_session = LexisSessionOffline(refresh_token=stored_token)
+        self.offline_lexis_session = LexisSessionToken(refresh_token=stored_token)
         
         if self.offline_lexis_session:
             print('Logging out...')

@@ -4,4 +4,6 @@ PROJECT = 'exa4mind_wp4'
 DATASET_ID_FILE_NAME = "dataset_id.txt"
 
 KEYRING_SERVICE_NAME = 'LEXIS_AUTH'
-KEYRING_USERNAME = "offline_token" 
+KEYRING_USERNAME = "offline_token"
+STORAGE_NAME = "iRODS IT4I"
+STORAGE_RESOURCE = "ATR-25-3" 

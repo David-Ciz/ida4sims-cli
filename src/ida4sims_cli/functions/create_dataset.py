@@ -1,7 +1,7 @@
 from typing import Dict
 
 from py4lexis.lexis_irods import iRODS
-from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS, PROJECT, DATASET_ID_FILE_NAME
+from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS, PROJECT, DATASET_ID_FILE_NAME, STORAGE_NAME, STORAGE_RESOURCE
 import os
 
 def create_lexis_dataset(irods: iRODS, title: str, metadata: Dict[str, str]) -> str:
@@ -14,7 +14,7 @@ def create_lexis_dataset(irods: iRODS, title: str, metadata: Dict[str, str]) -> 
     else:
 
         response = irods.create_dataset(
-            access=DEFAULT_ACCESS, project=PROJECT, title=title, additional_metadata=metadata, dataset_type="dataset"
+            access=DEFAULT_ACCESS, project=PROJECT, storage_name=STORAGE_NAME, storage_resource=STORAGE_RESOURCE, title=title, additional_metadata=metadata, dataset_type="dataset"
         )
         
         dataset_id = response["dataset_id"]
