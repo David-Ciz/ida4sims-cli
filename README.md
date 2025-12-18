@@ -118,6 +118,15 @@ ida-upload-dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-
 This file can also be created manually and it should contain the dataset ID only. Dataset ID is a string in the format of: `90b95334-1ac2-18f0-b80c-0242ac140003`. The id can be found in the log information of the upload, or can be found in the LEXIS web interface.
 
 
+### Listing Datasets
+To list all datasets uploaded to Lexis that are visible to the user, use the following command:
+
+```bash
+ida-get-all-datasets
+```
+
+This command has no parameters.
+
 ### Logout
 **After you have finished your work, it's recommended to clear the stored authentication tokens:**
 
