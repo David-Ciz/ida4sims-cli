@@ -3,7 +3,6 @@ from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
 from ida4sims_cli.functions.sync_directory_contents import sync_directory_contents
 from ida4sims_cli.functions.list_directory_contents import list_directory_contents
-from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS, PROJECT
 from ida4sims_cli.functions.check_if_dataset_contains_file import check_if_dataset_contains_file
 from ida4sims_cli.functions.check_if_dataset_contains_directory import check_if_dataset_contains_directory
 
@@ -59,7 +58,6 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
                 irods.put_data_object_to_dataset(
                     local_filepath=local_path,
                     dataset_filepath=target_name,
-                    access=DEFAULT_ACCESS, project=PROJECT,
                     dataset_id=dataset_id,
                 )
                 print(f"SUCCESS: File '{target_name}' uploaded.")
@@ -71,7 +69,6 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
             try:
                 irods.upload_directory_to_dataset(
                     local_directorypath=local_path,
-                    access=DEFAULT_ACCESS, project=PROJECT, 
                     dataset_id=dataset_id,
                 )
                 print(f"SUCCESS: Directory uploaded.")
@@ -134,7 +131,6 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
                     irods.put_data_object_to_dataset(
                         local_filepath=file_path,
                         dataset_filepath="./",
-                        access=DEFAULT_ACCESS, project=PROJECT,
                         dataset_id=dataset_id,
                     )
                     print(f"SUCCESS: File '{target_name}' uploaded.")
@@ -154,7 +150,6 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
                 irods.put_data_object_to_dataset(
                     local_filepath=file_path,
                     dataset_filepath="./",
-                    access=DEFAULT_ACCESS, project=PROJECT,
                     dataset_id=dataset_id,
                 )
                 print(f"SUCCESS: File '{target_name}' uploaded.")

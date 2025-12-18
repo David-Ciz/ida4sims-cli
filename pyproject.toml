@@ -11,14 +11,14 @@ requires-python = ">=3.10,<3.12"
 license = {text = "MIT"}
 authors = [
     {name = "Pylat Nestor", email = "pylat.nestor@vsb.cz"},
-    {name = "David Číž", email = "david.ciz@vsb.cz"}
+    {name = "David Číž", email = "david.ciz@vsb.cz"},
     {name = "Radek Furmánek", email = "radek.furmanek@vsb.cz"}
 ]
 # Dependencies should be an array of strings in PEP 508 format
 dependencies = [
     "pandas",
     "click",
-    "py4lexis==4.0.0",
+    "py4lexis",
     "keyring",
     "keyrings.alt"
 ]
@@ -26,6 +26,7 @@ dependencies = [
 [project.scripts]
 ida-upload-dataset = "ida4sims_cli.upload_dataset:cli"  # Your main entry point
 ida-logout = "ida4sims_cli.logout:main"  # Logout entry point
+py4lexis-get-datasets = "ida4sims_cli.py4lexis_get_datasets:main"  # Get datasets using py4lexis CLI
 
 [tool.setuptools]
 package-dir = {"" = "src"}
