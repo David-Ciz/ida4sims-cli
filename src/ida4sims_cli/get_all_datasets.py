@@ -18,7 +18,7 @@ def get_refresh_token():
     if stored_token:
         print("Attempting to refresh session using stored token...")
         try:
-            session_attempt = LexisSessionToken(refresh_token=stored_token,in_cli=True)
+            session_attempt = LexisSessionToken(refresh_token=stored_token)
             if session_attempt:
                 try:
                     refreshed_token = session_attempt.get_refresh_token()
