@@ -26,7 +26,7 @@ dependencies = [
 [project.scripts]
 ida-upload-dataset = "ida4sims_cli.upload_dataset:cli"  # Your main entry point
 ida-logout = "ida4sims_cli.logout:main"  # Logout entry point
-py4lexis-get-datasets = "ida4sims_cli.py4lexis_get_datasets:main"  # Get datasets using py4lexis CLI
+ida-get-all-datasets = "ida4sims_cli.get_all_datasets:main"  # Get datasets using py4lexis CLI
 
 [tool.setuptools]
 package-dir = {"" = "src"}
