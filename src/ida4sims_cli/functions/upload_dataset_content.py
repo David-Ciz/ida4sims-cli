@@ -90,7 +90,7 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
         print("upload_dataset_as_files is not intended for dataset_type=simulation")
         return
     
-    elif dataset_type=="forcefield":
+    elif dataset_type=="force_field":
         file_keys = [
             'dat_file',
             'library_files',
