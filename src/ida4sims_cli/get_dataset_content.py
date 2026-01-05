@@ -59,7 +59,7 @@ if __name__ == "__main__":
          logging.error("Failed to get LEXIS session. Exiting.")
          exit()
 
-    datasets = Datasets(session=session, suppress_print=False)
+    datasets = Datasets(session=session, suppress_print=False, reraise_exceptions=True)
     print_dataset_content(datasets, dataset_id)
 
     logging.info("Script finished.")

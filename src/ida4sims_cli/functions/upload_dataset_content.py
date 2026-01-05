@@ -1,4 +1,5 @@
 import os
+import time
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
 from ida4sims_cli.functions.sync_directory_contents import sync_directory_contents
@@ -16,20 +17,39 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
 
     print(f"Fetching current content list for dataset '{dataset_id}' to check for existing items...")
     dataset_content_list = None
-    try:
-        filelist_response = datasets.get_content_of_dataset(dataset_id=dataset_id)
-        if filelist_response and 'contents' in filelist_response:
-             dataset_content_list = filelist_response.get('contents')
-             if dataset_content_list:
-                  print(f"  Found {len(dataset_content_list)} items in dataset root cache.")
-             else:
-                  print("  Dataset root cache is empty.")
-        else:
-            print("  Dataset is currently empty or content could not be retrieved.")
-            dataset_content_list = []
-    except Exception as e:
-        print(f"WARNING: Could not fetch dataset contents: {e}. Proceeding without existence checks.")
-        dataset_content_list = None
+
+    # Retry logic to wait for dataset creation propagation
+    max_retries = 24
+    retry_delay = 5
+
+    for attempt in range(max_retries):
+        try:
+            filelist_response = datasets.get_content_of_dataset(dataset_id=dataset_id)
+
+            if filelist_response is None:
+                # py4lexis returns None and prints error if dataset doesn't exist yet
+                print(f"  Dataset content retrieval returned None (attempt {attempt + 1}/{max_retries}). Waiting {retry_delay}s...")
+                time.sleep(retry_delay)
+                continue
+
+            if 'contents' in filelist_response:
+                 dataset_content_list = filelist_response.get('contents')
+                 if dataset_content_list:
+                      print(f"  Found {len(dataset_content_list)} items in dataset root cache.")
+                 else:
+                      print("  Dataset root cache is empty.")
+                 break
+            else:
+                print("  Dataset is currently empty or content could not be retrieved.")
+                dataset_content_list = []
+                break
+        except Exception as e:
+            print(f"WARNING: Could not fetch dataset contents: {e}. Retrying (attempt {attempt + 1}/{max_retries})...")
+            time.sleep(retry_delay)
+
+    if dataset_content_list is None:
+        print("WARNING: Could not fetch dataset contents after retries. Proceeding without existence checks.")
+        dataset_content_list = []
 
     should_skip = False
     target_name = os.path.basename(local_path)

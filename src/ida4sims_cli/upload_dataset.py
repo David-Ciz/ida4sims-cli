@@ -1,5 +1,7 @@
 import json
 from typing import Dict
+import time
+import os
 
 import click
 from ida4sims_cli.functions.LexisAuthManager import LexisAuthManager
@@ -11,6 +13,9 @@ from py4lexis.ddi.datasets import Datasets
 from ida4sims_cli.helpers.default_data import DEFAULT_ACCESS
 from ida4sims_cli.helpers.creators import parse_creator_strings
 import sys
+
+# Ensure py4lexis raises exceptions instead of swallowing them
+os.environ["PY4LEXIS_RERAISE_EXCEPTIONS"] = "True"
 
 auth_manager = LexisAuthManager()
 
@@ -45,8 +50,8 @@ def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str,
 
     print("Initializing LEXIS connection...")
     try:
-        irods = iRODS(session=session, suppress_print=False)
-        datasets = Datasets(session=session, suppress_print=False)
+        irods = iRODS(session=session, suppress_print=False, reraise_exceptions=True)
+        datasets = Datasets(session=session, suppress_print=False, reraise_exceptions=True)
     except Exception as conn_err:
         print(f"ERROR: Failed to initialize iRODS/Datasets connection: {conn_err}", file=sys.stderr)
         sys.exit(1) # Exit if connection fails
@@ -61,12 +66,41 @@ def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str,
             sys.exit(1)
 
         print(f"Created dataset entry with preliminary ID: '{dataset_id}'")
+
+        print("Waiting for dataset to be initialized in iRODS (this may take a few seconds)...")
+        initialized = False
+        for attempt in range(12): # Retry for approx 60s
+            try:
+                # Check if dataset is visible/accessible
+                resp = datasets.get_content_of_dataset(dataset_id)
+                if resp and 'contents' in resp:
+                    initialized = True
+                    break
+            except Exception:
+                pass
+            time.sleep(5)
+
+        if not initialized:
+             print("WARNING: Dataset initialization check timed out. Proceeding, but errors may occur.")
+        else:
+             print("Dataset initialized successfully.")
+
         print("Uploading content to dataset...")
 
         if dataset_type == "simulation":
             upload_dataset_content(irods, datasets, path, dataset_id)
         else:
             upload_dataset_as_files(irods, path, dataset_id, dataset_type, metadata)
+
+        print("Verifying dataset content...")
+        try:
+            verify_resp = datasets.get_content_of_dataset(dataset_id)
+            # If contents list is empty, it implies upload failed silently (unless user uploaded empty dir)
+            if not verify_resp or not verify_resp.get('contents'):
+                raise Exception("Dataset appears empty after upload. This may indicate a silent failure in the transfer process (e.g., network interruption).")
+        except Exception as verify_err:
+            print(f"ERROR: Upload verification failed: {verify_err}", file=sys.stderr)
+            raise verify_err # Re-raise to trigger the except block and skip deletion of dataset_id
 
         print("Cleaning up temporary data...")
         delete_saved_dataset_id() # Assumes this cleans up temp ID files

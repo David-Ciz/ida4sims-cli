@@ -21,7 +21,7 @@ class LexisAuthManager:
         if stored_token:
             print("Attempting to create session using stored token (may be refreshed)...")
             try:
-                session_attempt = LexisSessionToken(refresh_token=stored_token)
+                session_attempt = LexisSessionToken(refresh_token=stored_token, reraise_exceptions=True)
 
                 if session_attempt:
                     print("Session created successfully using stored/refreshed token.")
@@ -41,7 +41,7 @@ class LexisAuthManager:
                  print("Stored token failed. Performing new login...")
 
             try:
-                lexis_session = LexisSession(offline_access=True)
+                lexis_session = LexisSession(offline_access=True, reraise_exceptions=True)
 
                 if lexis_session:
                     print("New login successful.")
@@ -52,7 +52,7 @@ class LexisAuthManager:
                         keyring.set_password(KEYRING_SERVICE_NAME, KEYRING_USERNAME, new_offline_token)
                         print(f"Stored new offline token for '{KEYRING_SERVICE_NAME}'.")
 
-                        self.offline_lexis_session = LexisSessionToken(refresh_token=new_offline_token)
+                        self.offline_lexis_session = LexisSessionToken(refresh_token=new_offline_token, reraise_exceptions=True)
                         print("Offline session created with new token.")
                     else:
                         print("Warning: Login succeeded, but failed to retrieve an offline token to store.")
@@ -73,8 +73,8 @@ class LexisAuthManager:
         return self.offline_lexis_session
     
     def logout (self):
-        self.offline_lexis_session = LexisSessionToken(refresh_token=stored_token)
-        
+        self.offline_lexis_session = LexisSessionToken(refresh_token=stored_token, reraise_exceptions=True)
+
         if self.offline_lexis_session:
             print('Logging out...')
             self.offline_lexis_session.logout()

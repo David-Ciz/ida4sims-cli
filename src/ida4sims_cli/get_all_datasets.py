@@ -6,8 +6,12 @@ Script to get all datasets using py4lexis CLI with stored refresh token.
 import subprocess
 import sys
 import keyring
+import os
 from py4lexis.session import LexisSession, LexisSessionToken
 from ida4sims_cli.helpers.default_data import KEYRING_SERVICE_NAME, KEYRING_USERNAME
+
+# Ensure py4lexis raises exceptions instead of swallowing them
+os.environ["PY4LEXIS_RERAISE_EXCEPTIONS"] = "True"
 
 def get_refresh_token():
     stored_token = keyring.get_password(KEYRING_SERVICE_NAME, KEYRING_USERNAME)
@@ -18,7 +22,7 @@ def get_refresh_token():
     if stored_token:
         print("Attempting to refresh session using stored token...")
         try:
-            session_attempt = LexisSessionToken(refresh_token=stored_token)
+            session_attempt = LexisSessionToken(refresh_token=stored_token, reraise_exceptions=True)
             if session_attempt:
                 try:
                     refreshed_token = session_attempt.get_refresh_token()
@@ -40,7 +44,7 @@ def get_refresh_token():
 
     print("Performing new login...")
     try:
-        lexis_session = LexisSession(offline_access=True)
+        lexis_session = LexisSession(offline_access=True, reraise_exceptions=True)
         if lexis_session:
             print("New login successful.")
             new_token = lexis_session.get_refresh_token()
