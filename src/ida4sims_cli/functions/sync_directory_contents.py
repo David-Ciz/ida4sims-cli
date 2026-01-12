@@ -64,14 +64,13 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                     irods.put_data_object_to_dataset(
                         local_filepath=local_item_full_path,
                         dataset_filepath=path,
-                        access=DEFAULT_ACCESS, project=PROJECT,
                         dataset_id=dataset_id,
                     )
                 else:
                     pass
 
             elif item1_type == 'directory':
-                 print(f"      recursing into directory '{name}'...")
+                 print(f"recursing into directory '{name}'...")
                  sub_diffs = sync_directory_contents(
                     irods,
                     item1.get('contents'),
@@ -107,7 +106,6 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                 
                 irods.upload_directory_to_dataset(
                     local_directorypath=local_item_full_path,
-                    access=DEFAULT_ACCESS, project=PROJECT, 
                     dataset_id=dataset_id,
                     dataset_directorypath=parent_path
                 )
@@ -124,7 +122,6 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                 irods.put_data_object_to_dataset(
                     local_filepath=local_item_full_path,
                     dataset_filepath=file_path,
-                    access=DEFAULT_ACCESS, project=PROJECT,
                     dataset_id=dataset_id,
                 )
 
