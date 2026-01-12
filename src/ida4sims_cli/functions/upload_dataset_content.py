@@ -8,6 +8,8 @@ from ida4sims_cli.functions.check_if_dataset_contains_file import check_if_datas
 from ida4sims_cli.functions.check_if_dataset_contains_directory import check_if_dataset_contains_directory
 
 def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, dataset_id: str) -> None:
+
+    local_path = local_path.rstrip(os.sep)
     
     print(f"Processing local path: '{local_path}' for dataset '{dataset_id}'")
 
@@ -53,9 +55,6 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
 
     should_skip = False
     target_name = os.path.basename(local_path)
-
-    if not target_name and os.path.isdir(local_path):
-        target_name = "uploaded_directory"
 
     if os.path.isfile(local_path):
         print(f"Path is a file. Target name: '{target_name}'. Checking existence and size...")
