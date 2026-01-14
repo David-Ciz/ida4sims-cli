@@ -1,16 +1,17 @@
 import os
-import time
+import contextlib
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
 from ida4sims_cli.functions.sync_directory_contents import sync_directory_contents
 from ida4sims_cli.functions.list_directory_contents import list_directory_contents
 from ida4sims_cli.functions.check_if_dataset_contains_file import check_if_dataset_contains_file
 from ida4sims_cli.functions.check_if_dataset_contains_directory import check_if_dataset_contains_directory
+from ida4sims_cli.functions.utils import wait_for_dataset_contents
 
 def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, dataset_id: str) -> None:
 
     local_path = local_path.rstrip(os.sep)
-    
+
     print(f"Processing local path: '{local_path}' for dataset '{dataset_id}'")
 
     if not os.path.exists(local_path):
@@ -18,40 +19,13 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
         raise FileNotFoundError(f"Local path not found: {local_path}")
 
     print(f"Fetching current content list for dataset '{dataset_id}' to check for existing items...")
-    dataset_content_list = None
-
-    # Retry logic to wait for dataset creation propagation
-    max_retries = 24
-    retry_delay = 5
-
-    for attempt in range(max_retries):
-        try:
-            filelist_response = datasets.get_content_of_dataset(dataset_id=dataset_id)
-
-            if filelist_response is None:
-                # py4lexis returns None and prints error if dataset doesn't exist yet
-                print(f"  Dataset content retrieval returned None (attempt {attempt + 1}/{max_retries}). Waiting {retry_delay}s...")
-                time.sleep(retry_delay)
-                continue
-
-            if 'contents' in filelist_response:
-                 dataset_content_list = filelist_response.get('contents')
-                 if dataset_content_list:
-                      print(f"  Found {len(dataset_content_list)} items in dataset root cache.")
-                 else:
-                      print("  Dataset root cache is empty.")
-                 break
-            else:
-                print("  Dataset is currently empty or content could not be retrieved.")
-                dataset_content_list = []
-                break
-        except Exception as e:
-            print(f"WARNING: Could not fetch dataset contents: {e}. Retrying (attempt {attempt + 1}/{max_retries})...")
-            time.sleep(retry_delay)
-
+    dataset_content_list, attempts_used = wait_for_dataset_contents(datasets, dataset_id, max_retries=24, retry_delay=5)
+    
     if dataset_content_list is None:
-        print("WARNING: Could not fetch dataset contents after retries. Proceeding without existence checks.")
+        print(f"WARNING: Could not fetch dataset contents after {attempts_used} attempts. Proceeding without existence checks.")
         dataset_content_list = []
+    else:
+        print(f"Dataset content fetch completed after {attempts_used} attempt(s).")
 
     should_skip = False
     target_name = os.path.basename(local_path)
@@ -69,7 +43,7 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
             local_dir_content = list_directory_contents(local_path)   
             print("---------------------------------------sync_directory_contents-----------------------------------: ")
             sync_directory_contents(irods, dataset_content_list, local_dir_content, dataset_id, local_path)        
-        
+
     if not should_skip:
         if os.path.isfile(local_path):
             print(f"Attempting to upload file '{local_path}' as '{target_name}'...")
@@ -98,11 +72,12 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
              print(f"ERROR: Local path '{local_path}' is not a valid file or directory for upload.")
              raise ValueError(f"Local path '{local_path}' is not a file or directory.")
 
+
 def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, dataset_type: str, metadata: dict) -> None:
     """
     Uploads individual files from metadata to the dataset as separate data objects.
-    The metadata contains only the file names, not full paths.
-    Files that are None or do not exist in local_path are skipped.
+    The metadata may contain either file names relative to local_path, or
+    full/relative paths already. Files that are None or do not exist are skipped.
     """
     if dataset_type == "simulation":
         # This function should not be used for simulation datasets
@@ -126,7 +101,20 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
     else:
         print(f"ERROR: Unsupported dataset type '{dataset_type}' for file upload.")
         return
-    
+
+    def resolve_candidate(local_base: str, candidate: str) -> str:
+        """Return an existing file path for candidate.
+
+        If candidate is absolute or already contains a directory component, treat
+        it as a path and normalize it. Otherwise join with local_base.
+        """
+        if not candidate:
+            # Return empty string for missing candidate; caller will skip falsy values
+            return ""
+        if os.path.isabs(candidate) or os.path.dirname(candidate):
+            return os.path.normpath(candidate)
+        return os.path.normpath(os.path.join(local_base, candidate))
+
     for key in file_keys:
         filename = metadata.get(key)
         if filename is None:
@@ -139,7 +127,7 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
                 if fname is None:
                     # Skip if the list contains None
                     continue
-                file_path = os.path.join(local_path, fname)
+                file_path = resolve_candidate(local_path, fname)
                 if not os.path.isfile(file_path):
                     # File does not exist at the constructed path, skip
                     print(f"File '{file_path}' does not exist, skipping.")
@@ -158,7 +146,7 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
                     raise e
         else:
             # Single file case
-            file_path = os.path.join(local_path, filename)
+            file_path = resolve_candidate(local_path, filename)
             if not os.path.isfile(file_path):
                 # File does not exist at the constructed path, skip
                 print(f"File '{file_path}' does not exist, skipping.")

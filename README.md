@@ -118,6 +118,32 @@ ida-upload-dataset simulation /data/sim_run_5 "uuuu-ROC-TIP3P-0.1NaCl" --author-
 This file can also be created manually and it should contain the dataset ID only. Dataset ID is a string in the format of: `90b95334-1ac2-18f0-b80c-0242ac140003`. The id can be found in the log information of the upload, or can be found in the LEXIS web interface.
 
 
+### Listing of Dataset File Hashes
+To get a list of all files in a dataset along with their SHA256 hashes, use:
+
+```bash
+ida-get-dataset-hashes DATASET_ID
+```
+
+You can also compare the dataset hashes with a local directory to verify integrity:
+```bash
+ida-get-dataset-hashes DATASET_ID --compare-with /path/to/local/data
+```
+The output will show checking status for each file (MATCH, DIFFERS, MISSING).
+
+Example:
+```bash
+ida-get-dataset-hashes d56c812e-e30c-11ef-a926-0242ac150006
+``` 
+
+### Exporting Hashes
+You can export the results to a CSV file for later use:
+```bash
+ida-get-dataset-hashes DATASET_ID --output-file hashes.csv
+```
+This will create a CSV file containing columns for `File Path`, `Remote Hash`, and `Status`. If used with `--compare-with`, it will also include `Local Check` and `Local Hash`.
+
+
 ### Listing Datasets
 To list all datasets uploaded to Lexis that are visible to the user, use the following command:
 

@@ -1,12 +1,15 @@
 import json
 from typing import Dict
-import time
 import os
 
 import click
 from ida4sims_cli.functions.LexisAuthManager import LexisAuthManager
 from ida4sims_cli.functions.create_dataset import create_lexis_dataset
-from ida4sims_cli.functions.upload_dataset_content import upload_dataset_content, upload_dataset_as_files
+from ida4sims_cli.functions.upload_dataset_content import (
+    upload_dataset_content,
+    upload_dataset_as_files,
+)
+from ida4sims_cli.functions.utils import wait_for_dataset_contents
 from ida4sims_cli.functions.delete_dataset_id import delete_saved_dataset_id
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets
@@ -19,20 +22,39 @@ os.environ["PY4LEXIS_RERAISE_EXCEPTIONS"] = "True"
 
 auth_manager = LexisAuthManager()
 
-def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str, str]) -> None:
+
+def resolve_path(base_path: str, filename: str) -> str:
+    """Return a normalized path for `filename`.
+
+    If `filename` contains any directory component or is absolute, return its
+    normalized form unchanged. Otherwise, join it with `base_path` and
+    normalize.
+
+    This prevents double-joining when users already pass paths like
+    "../dir/file" while also supplying `base_path`.
     """
-    Core function to handle dataset creation and upload to LEXIS.
+    if not filename:
+        # Return empty string for missing filename (caller will filter falsy values)
+        return ""
+    # If filename has a directory component (e.g., 'subdir/file' or '../x')
+    # or is absolute, trust it as provided.
+    if os.path.isabs(filename) or os.path.dirname(filename):
+        return os.path.normpath(filename)
+    return os.path.normpath(os.path.join(base_path, filename))
+
+
+def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str, str]) -> None:
+    """Core function to handle dataset creation and upload to LEXIS.
 
     Args:
         title (str): Dataset title.
-        path (str): Local file or directory path to upload.
+        path (str): Local path to upload (file or directory).
         access (str): Access level for the dataset.
-        dataset_type (str): Type of the dataset (e.g., 'simulation', 'forcefield').
-        **metadata (dict): Additional metadata specific to the dataset type.
+        metadata (dict): Additional metadata specific to the dataset type.
     """
 
 
-    dataset_type = metadata.get('dataset_type','')  # Default to 'generic' if not specified
+    dataset_type = metadata.get('dataset_type', '')  # Default to 'generic' if not specified
     print(f"--- Starting {dataset_type.capitalize()} Dataset Upload ---")
     print(f"Processing dataset '{title}' from path '{path}'...")
     print(f"Access level: {access}")
@@ -67,36 +89,28 @@ def upload_lexis_dataset(title: str, path: str, access: str, metadata: Dict[str,
 
         print(f"Created dataset entry with preliminary ID: '{dataset_id}'")
 
-        print("Waiting for dataset to be initialized in iRODS (this may take a few seconds)...")
-        initialized = False
-        for attempt in range(12): # Retry for approx 60s
-            try:
-                # Check if dataset is visible/accessible
-                resp = datasets.get_content_of_dataset(dataset_id)
-                if resp and 'contents' in resp:
-                    initialized = True
-                    break
-            except Exception:
-                pass
-            time.sleep(5)
-
-        if not initialized:
-             print("WARNING: Dataset initialization check timed out. Proceeding, but errors may occur.")
-        else:
-             print("Dataset initialized successfully.")
+        # Wait briefly for the dataset to become visible in iRODS before upload.
+        # This provides immediate feedback to the user and avoids starting
+        # uploads against a dataset that has not yet propagated.
+        print("Checking dataset visibility in iRODS before upload...")
+        pre_contents, pre_attempts = wait_for_dataset_contents(datasets, dataset_id)
+        if not pre_contents:
+            print(f"Note: dataset '{dataset_id}' appears empty after {pre_attempts} attempt(s); the uploader will still proceed but may retry internally.")
 
         print("Uploading content to dataset...")
 
         if dataset_type == "simulation":
             upload_dataset_content(irods, datasets, path, dataset_id)
         else:
+            # upload_dataset_as_files expects (irods, local_path, dataset_id, dataset_type, metadata)
             upload_dataset_as_files(irods, path, dataset_id, dataset_type, metadata)
 
         print("Verifying dataset content...")
         try:
             verify_resp = datasets.get_content_of_dataset(dataset_id)
-            # If contents list is empty, it implies upload failed silently (unless user uploaded empty dir)
-            if not verify_resp or not verify_resp.get('contents'):
+            # If we couldn't fetch the response (None), or the response isn't a dict,
+            # or the 'contents' key is missing/empty, treat it as a verification failure.
+            if verify_resp is None or not isinstance(verify_resp, dict) or not verify_resp.get('contents'):
                 raise Exception("Dataset appears empty after upload. This may indicate a silent failure in the transfer process (e.g., network interruption).")
         except Exception as verify_err:
             print(f"ERROR: Upload verification failed: {verify_err}", file=sys.stderr)
@@ -190,17 +204,15 @@ def simulation(path, title, access, creator_person, creator_org, author_name, de
     """
     Uploads a SIMULATION dataset to LEXIS.
 
-    This command takes simulation output data from a local PATH, gives it a TITLE,
+    This command takes simulation output data from a local path, gives it a title,
     and uploads it as a dataset. You can provide additional metadata specific
     to simulations using the available options.
 
-    \b
     Arguments:
-        PATH: Local file or directory path containing simulation output.
-        TITLE: Dataset title (e.g., "MD simulation of protein X").
+        path: Local file or directory path containing simulation output.
+        title: Dataset title (e.g., "MD simulation of protein X").
 
 
-    \b
     Examples:
         ida-upload_dataset simulation /data/sim_run_5 \\
          "uuuu-ROC-TIP3P-0.1NaCl" --author-name "Jane Doe" --description "Equilibration phase"
@@ -252,7 +264,7 @@ def simulation(path, title, access, creator_person, creator_org, author_name, de
     help='Display name, used when feature-state is "experimental".',
 )
 
-def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name, is_hidden, feature_state, display_name):
+def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name, feature_state, display_name):
     """Upload a FORCE FIELD dataset.
 
     TITLE: Dataset title (e.g., "Custom GROMAX force field for lipids").
@@ -260,16 +272,26 @@ def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_n
     """
     creators = parse_creator_strings(list(creator_person), list(creator_org))
 
+    # Resolve paths for files: if the user already provided a path component
+    # (e.g. '../dir/file' or an absolute path), trust it as-is; otherwise join
+    # it with the provided `path` argument.
+    resolved_dat_file = resolve_path(path, dat_file)
+    resolved_library_files = [resolve_path(path, f) for f in library_file] if library_file else []
+    resolved_leaprc_file = resolve_path(path, leaprc_file) if leaprc_file else None
+    resolved_frcmod_files = [resolve_path(path, f) for f in frcmod_file] if frcmod_file else []
+    resolved_fixcommand_file = resolve_path(path, fixcommand_file) if fixcommand_file else None
+
     metadata = {
         'ff_format': ff_format,
         'dataset_type': 'force_field',
         'ff_name': ff_name,
         'molecule_type': molecule_type,
-        'dat_file': dat_file,
-        'library_files': library_file,
-        'leaprc_file': leaprc_file,
-        'frcmod_files': frcmod_file,
-        'fixcommand_file': fixcommand_file,
+        # pass resolved paths so uploader won't double-join
+        'dat_file': resolved_dat_file,
+        'library_files': resolved_library_files,
+        'leaprc_file': resolved_leaprc_file,
+        'frcmod_files': resolved_frcmod_files,
+        'fixcommand_file': resolved_fixcommand_file,
         'data_publication_time': data_publication_time,
         'reference_article_doi': reference_article_doi,
         'author_name': author_name,

@@ -27,6 +27,7 @@ dependencies = [
 ida-upload-dataset = "ida4sims_cli.upload_dataset:cli"  # Your main entry point
 ida-logout = "ida4sims_cli.logout:main"  # Logout entry point
 ida-get-all-datasets = "ida4sims_cli.get_all_datasets:main"  # Get datasets using py4lexis CLI
+ida-get-dataset-hashes = "ida4sims_cli.get_dataset_hashes:cli" # Get dataset hashes
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -36,6 +37,8 @@ packages = ["ida4sims_cli", "ida4sims_cli.functions", "ida4sims_cli.helpers"]
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
+    "pytest-mock",
+    "pytest-asyncio",
     "black>=23.0.0",
     "isort>=5.12.0",
 ]

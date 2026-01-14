@@ -11,7 +11,7 @@ def print_dataset_content(datasets: Datasets, dataset_id: str):
     try:
         logging.info(f"Attempting to retrieve content for dataset ID: {dataset_id}")
         filelist = datasets.get_content_of_dataset(dataset_id=dataset_id)
-
+        print(filelist)
         print(f"\n--- Contents of dataset {dataset_id} ---")
         if filelist and 'contents' in filelist and len(filelist['contents']) > 0:
             for item in filelist['contents']:
@@ -42,17 +42,17 @@ def print_dataset_content(datasets: Datasets, dataset_id: str):
         return False
 
 if __name__ == "__main__":
-    dataset_id = None
-    try:
-        with open(DATASET_ID_FILE_NAME, "r") as text_file:
-            dataset_id = text_file.read().strip()
-            logging.info(f"Read dataset ID: {dataset_id} from {DATASET_ID_FILE_NAME}")
-    except FileNotFoundError:
-         logging.error(f"Error: Dataset ID file not found at {DATASET_ID_FILE_NAME}")
-         exit() 
-    except Exception as e:
-         logging.error(f"Error reading dataset ID file: {e}")
-         exit() 
+    dataset_id = "d56c812e-e30c-11ef-a926-0242ac150006"
+    # try:
+    #     with open(DATASET_ID_FILE_NAME, "r") as text_file:
+    #         dataset_id = text_file.read().strip()
+    #         logging.info(f"Read dataset ID: {dataset_id} from {DATASET_ID_FILE_NAME}")
+    # except FileNotFoundError:
+    #      logging.error(f"Error: Dataset ID file not found at {DATASET_ID_FILE_NAME}")
+    #      exit()
+    # except Exception as e:
+    #      logging.error(f"Error reading dataset ID file: {e}")
+    #      exit()
 
     session = lexisAuthManager.login()
     if not session:
