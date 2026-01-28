@@ -272,14 +272,8 @@ def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_n
     """
     creators = parse_creator_strings(list(creator_person), list(creator_org))
 
-    # Resolve paths for files: if the user already provided a path component
-    # (e.g. '../dir/file' or an absolute path), trust it as-is; otherwise join
-    # it with the provided `path` argument.
-    resolved_dat_file = resolve_path(path, dat_file)
-    resolved_library_files = [resolve_path(path, f) for f in library_file] if library_file else []
-    resolved_leaprc_file = resolve_path(path, leaprc_file) if leaprc_file else None
-    resolved_frcmod_files = [resolve_path(path, f) for f in frcmod_file] if frcmod_file else []
-    resolved_fixcommand_file = resolve_path(path, fixcommand_file) if fixcommand_file else None
+
+ 
 
     metadata = {
         'ff_format': ff_format,
@@ -287,11 +281,11 @@ def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_n
         'ff_name': ff_name,
         'molecule_type': molecule_type,
         # pass resolved paths so uploader won't double-join
-        'dat_file': resolved_dat_file,
-        'library_files': resolved_library_files,
-        'leaprc_file': resolved_leaprc_file,
-        'frcmod_files': resolved_frcmod_files,
-        'fixcommand_file': resolved_fixcommand_file,
+        'dat_file': dat_file,
+        'library_files': library_file,
+        'leaprc_file': leaprc_file,
+        'frcmod_files': frcmod_file,
+        'fixcommand_file': fixcommand_file,
         'data_publication_time': data_publication_time,
         'reference_article_doi': reference_article_doi,
         'author_name': author_name,
