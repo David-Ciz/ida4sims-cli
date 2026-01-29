@@ -67,9 +67,7 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                         dataset_filepath=str(Path(path).parent),
                         dataset_id=dataset_id,
                         overwrite=True,
-                        use_sqlite_for_handle_management=True,
-                        compare_checksums=True,
-                        raise_checksum_exception=True
+                        use_sqlite_for_handle_management=True
                     )
                 else:
                     pass
@@ -113,9 +111,7 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                     local_directorypath=local_item_full_path,
                     dataset_id=dataset_id,
                     dataset_directorypath=parent_path,
-                    use_sqlite_for_handle_management=True,
-                    compare_checksums=True,
-                    raise_checksum_exception=True
+                    use_sqlite_for_handle_management=True
                 )
                 
             elif item2.get('type') == 'file':
@@ -132,9 +128,7 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                     dataset_filepath=str(Path(file_path).parent),
                     dataset_id=dataset_id,                    
                     overwrite=True,
-                    use_sqlite_for_handle_management=True,
-                    compare_checksums=True,
-                    raise_checksum_exception=True
+                    use_sqlite_for_handle_management=True
                 )
 
     return {'missing_locally': missing, 'extra_locally': extra, 'mismatches': mismatched}
