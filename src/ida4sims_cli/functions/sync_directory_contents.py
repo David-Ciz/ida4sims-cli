@@ -67,7 +67,6 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                         dataset_filepath=Path(local_item_full_path).parent.as_posix(),
                         overwrite=True,
                         dataset_id=dataset_id,
-                        overwrite=True,
                         use_sqlite_for_handle_management=True,
                         compare_checksums=False,
                         raise_checksum_exception=False
