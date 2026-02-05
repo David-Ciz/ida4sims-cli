@@ -8,8 +8,8 @@ from ida4sims_cli.functions.create_dataset import create_lexis_dataset
 from ida4sims_cli.functions.upload_dataset_content import (
     upload_dataset_content,
     upload_dataset_as_files,
+    wait_for_dataset_contents,
 )
-from ida4sims_cli.functions.utils import wait_for_dataset_contents
 from ida4sims_cli.functions.delete_dataset_id import delete_saved_dataset_id
 from py4lexis.lexis_irods import iRODS
 from py4lexis.ddi.datasets import Datasets

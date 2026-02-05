@@ -64,7 +64,8 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                     print(dataset_id)
                     irods.put_data_object_to_dataset(
                         local_filepath=local_item_full_path,
-                        dataset_filepath=str(Path(path).parent),
+                        dataset_filepath=Path(local_item_full_path).parent.as_posix(),
+                        overwrite=True,
                         dataset_id=dataset_id,
                         overwrite=True,
                         use_sqlite_for_handle_management=True,
@@ -129,9 +130,9 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                 print("EXTRA FILE")
                 irods.put_data_object_to_dataset(
                     local_filepath=local_item_full_path,
-                    dataset_filepath=str(Path(file_path).parent),
-                    dataset_id=dataset_id,                    
+                    dataset_filepath=Path(local_item_full_path).parent.as_posix(),
                     overwrite=True,
+                    dataset_id=dataset_id,
                     use_sqlite_for_handle_management=True,
                     compare_checksums=False,
                     raise_checksum_exception=False
