@@ -53,7 +53,9 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
                     local_filepath=local_path,
                     dataset_filepath=str(Path(local_path).parent),
                     dataset_id=dataset_id,
-                    use_sqlite_for_handle_management=True
+                    use_sqlite_for_handle_management=True,
+                    compare_checksums=False,
+                    raise_checksum_exception=False
                 )
                 print(f"SUCCESS: File '{target_name}' uploaded.")
             except Exception as e:
@@ -65,7 +67,9 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
                 irods.upload_directory_to_dataset(
                     local_directorypath=local_path,
                     dataset_id=dataset_id,
-                    use_sqlite_for_handle_management=True
+                    use_sqlite_for_handle_management=True,
+                    compare_checksums=False,
+                    raise_checksum_exception=False
                 )
                 print(f"SUCCESS: Directory uploaded.")
             except Exception as e:
@@ -142,7 +146,9 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
                         local_filepath=file_path,
                         dataset_filepath="./",
                         dataset_id=dataset_id,
-                        use_sqlite_for_handle_management=True
+                        use_sqlite_for_handle_management=True,
+                        compare_checksums=False,
+                        raise_checksum_exception=False
                     )
                     print(f"SUCCESS: File '{target_name}' uploaded.")
                 except Exception as e:
@@ -162,7 +168,9 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
                     local_filepath=file_path,
                     dataset_filepath="./",
                     dataset_id=dataset_id,
-                    use_sqlite_for_handle_management=True
+                    use_sqlite_for_handle_management=True,
+                    compare_checksums=False,
+                    raise_checksum_exception=False
                 )
                 print(f"SUCCESS: File '{target_name}' uploaded.")
             except Exception as e:
