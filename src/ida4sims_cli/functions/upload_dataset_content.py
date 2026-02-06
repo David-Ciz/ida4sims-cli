@@ -52,7 +52,7 @@ def upload_dataset_content(irods: iRODS, datasets: Datasets, local_path: str, da
             try:
                 irods.put_data_object_to_dataset(
                     local_filepath=local_path,
-                    dataset_filepath=Path(local_path).parent.as_posix(),
+                    dataset_filepath=str(Path(local_path).parent),
                     overwrite=True,
                     dataset_id=dataset_id,
                     use_sqlite_for_handle_management=True,
@@ -146,9 +146,13 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
                 try:
                     irods.put_data_object_to_dataset(
                         local_filepath=file_path,
-                        dataset_filepath=Path(file_path).parent.as_posix(),
+                        dataset_filepath="./",
                         overwrite=True,
                         dataset_id=dataset_id,
+                        use_sqlite_for_handle_management=True,
+                        compare_checksums=False,
+                        raise_checksum_exception=False
+
                     )
                     print(f"SUCCESS: File '{target_name}' uploaded.")
                 except Exception as e:
@@ -166,7 +170,7 @@ def upload_dataset_as_files(irods: iRODS, local_path: str, dataset_id: str, data
             try:
                 irods.put_data_object_to_dataset(
                     local_filepath=file_path,
-                    dataset_filepath=Path(file_path).parent.as_posix(),
+                    dataset_filepath="./",
                     overwrite=True,
                     dataset_id=dataset_id,
                     use_sqlite_for_handle_management=True,
