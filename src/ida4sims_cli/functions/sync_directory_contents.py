@@ -129,7 +129,7 @@ def sync_directory_contents(irods: iRODS, contents1, contents2, dataset_id: str,
                 print("EXTRA FILE")
                 irods.put_data_object_to_dataset(
                     local_filepath=local_item_full_path,
-                    dataset_filepath=str(Path(path).parent),
+                    dataset_filepath=str(Path(file_path).parent),
                     overwrite=True,
                     dataset_id=dataset_id,
                     use_sqlite_for_handle_management=True,
