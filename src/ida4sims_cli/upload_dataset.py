@@ -250,13 +250,13 @@ def simulation(path, title, access, creator_person, creator_org, author_name, de
 @click.option('--data-publication-time', type=str, required=False, help='Publication time of the data (e.g., "2024-06-01").')
 @click.option('--reference-article-doi', type=str, required=False, help='Reference article DOI (e.g., "10.1234/example.doi").')
 @click.option('--author-name', type=str, required=False, help='Name of the author of the force field.')
-@click.option(
-    '--feature-state',
-    type=click.Choice(['persistent', 'experimental', 'derived']),
-    default='persistent',
-    show_default=True,
-    help='Feature state of the force field. "persistent" and "derived" are visible, "experimental" is not.',
-)
+# @click.option(
+#     '--feature-state',
+#     type=click.Choice(['persistent', 'experimental', 'derived']),
+#     default='persistent',
+#     show_default=True,
+#     help='Feature state of the force field. "persistent" and "derived" are visible, "experimental" is not.',
+# )
 @click.option(
     '--display-name',
     type=str,
@@ -264,14 +264,14 @@ def simulation(path, title, access, creator_person, creator_org, author_name, de
     help='Display name, used when feature-state is "experimental".',
 )
 
-def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name, feature_state, display_name):
+def forcefield(title, path, access, creator_person, creator_org, ff_format, ff_name, molecule_type, dat_file, library_file, leaprc_file, frcmod_file, fixcommand_file, data_publication_time, reference_article_doi, author_name, display_name):
     """Upload a FORCE FIELD dataset.
 
     TITLE: Dataset title (e.g., "Custom GROMAX force field for lipids").
     PATH: Local file or directory path containing force field files.
     """
     creators = parse_creator_strings(list(creator_person), list(creator_org))
-
+    feature_state = 'persistent' # Default to 'persistent' as the feature state will not be currently implemented in CLI.
 
  
 
